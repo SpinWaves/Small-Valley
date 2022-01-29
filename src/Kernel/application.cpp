@@ -26,6 +26,8 @@ void Application::init(const char* name)
         SDL_Quit();
         log::report(log_type::fatal_error, "Unable to init GLEW");
     }
+
+    // ugly code af just for testing
     float vertices[] = {
         -0.5f, -0.5f, 0.0f,
          0.5f, -0.5f, 0.0f,
@@ -63,6 +65,7 @@ void Application::update(const Input& in)
     _shader->setMat4("proj", Matrixes::get_matrix(matrix::proj));
     _shader->setMat4("model", Matrixes::get_matrix(matrix::model));
 
+    // ugly code af just for testing
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
