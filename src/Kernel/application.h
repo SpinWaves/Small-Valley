@@ -5,11 +5,12 @@
 #include <io/inputs.h>
 #include <graphics/shaders.h>
 #include <graphics/camera.h>
+#include <entities/cube.h>
 
 class Application
 {
     public:
-        Application() = default;
+        Application();
 
         void init(const char* name);
         void update(const Input& in);
@@ -20,9 +21,11 @@ class Application
     private:
         SDL_Window* _win = nullptr;
         SDL_GLContext _context;
-        unsigned int VBO;
-        Shader* _shader;
-        Camera3D* _camera;
+
+        Shader _shader;
+        Camera3D _camera;
+        Cube _cube;
+        Texture* _tex = nullptr;
 };
 
 #endif // __APPLICATION__

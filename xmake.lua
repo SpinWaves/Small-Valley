@@ -18,6 +18,7 @@ target("World")
 	end
 
 	add_defines("MAIN_DIR=\"$(projectdir)/\"")
+	add_defines("RES_DIR=\"$(projectdir)/ressources/\"")
 	add_defines("SDL_MAIN_HANDLED")
     set_pcxxheader("src/pch.h")
 

@@ -1,6 +1,8 @@
 #include "application.h"
 #include <graphics/matrixes.h>
 
+Application::Application() : _shader(), _camera(), _cube() {}
+
 void Application::init(const char* name)
 {
     _win = SDL_CreateWindow(name, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1280, 720, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
@@ -27,29 +29,27 @@ void Application::init(const char* name)
         log::report(log_type::fatal_error, "Unable to init GLEW");
     }
 
-    // ugly code af just for testing
-    float vertices[] = {
-        -0.5f, -0.5f, 0.0f,
-         0.5f, -0.5f, 0.0f,
-         0.0f,  0.5f, 0.0f
-    };
-    glGenBuffers(1, &VBO);
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    _shader.create(MAIN_DIR"src/graphics/shaders/main_3D.vert", MAIN_DIR"src/graphics/shaders/main_3D.frag");
+    _shader.bindShader();
 
-    _shader = new Shader(MAIN_DIR"src/graphics/shaders/main_3D.vert", MAIN_DIR"src/graphics/shaders/main_3D.frag");
-    _camera = new Camera3D();
-    _camera->setPosition(1, 1, 1);
+    _camera.setPosition(-2, -2, 2);
+
+    _tex = new Texture();
+    _tex->load_texture(RES_DIR"assets/grass.jpg");
+
+    _cube.create(1, 1, 1);
+
+    glDepthMask(GL_TRUE);
+    glEnable(GL_DEPTH_TEST);
+    glActiveTexture(GL_TEXTURE0);
 }
 
 void Application::update(const Input& in)
 {
     SDL_GL_SetSwapInterval(0);
 
-    _camera->update();
-    _camera->onEvent(in);
-    _camera->look();
+    _camera.onEvent(in);
+    _camera.look();
 
     Matrixes::matrix_mode(matrix::proj);
     Matrixes::perspective(90, (float)1280/720, 0.01, 100);
@@ -60,33 +60,23 @@ void Application::update(const Input& in)
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glClearColor(0.49f, 0.66f, 0.85f, 1.0f);
 
-    _shader->bindShader();
-    _shader->setMat4("view", Matrixes::get_matrix(matrix::view));
-    _shader->setMat4("proj", Matrixes::get_matrix(matrix::proj));
-    _shader->setMat4("model", Matrixes::get_matrix(matrix::model));
+    _shader.setMat4("view", Matrixes::get_matrix(matrix::view));
+    _shader.setMat4("proj", Matrixes::get_matrix(matrix::proj));
+    _shader.setMat4("model", Matrixes::get_matrix(matrix::model));
 
-    // ugly code af just for testing
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glEnable(GL_TEXTURE_2D);
+    _tex->bind_texture();
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
+    _cube.render();
 
-    glDrawArrays(GL_TRIANGLES, 0, 6);
-
-    glDisableVertexAttribArray(0);
+    _tex->unbind_texture();
 
     SDL_GL_SwapWindow(_win);
-
-    _shader->unbindShader();
 }
 
 void Application::destroy()
 {
-    if(glIsBuffer(VBO))
-        glDeleteBuffers(1, &VBO);
-    
-    delete _shader;
-    delete _camera;
+    delete _tex;
     
     SDL_GL_DeleteContext(_context);
     SDL_DestroyWindow(_win);

@@ -8,7 +8,9 @@
 class Shader
 {
     public:
-        Shader(const char* vertexFile, const char* fragmentFile);
+        Shader() = default;
+
+        void create(const char* vertexFile, const char* fragmentFile);
 
         void bindShader();
         void unbindShader();

@@ -43,7 +43,6 @@ void Input::update()
                 _keys[0][_event.key.keysym.scancode] = false;
             break;
 
-
             case SDL_KEYUP: 
                 _keys[1][_event.key.keysym.scancode] = false;
                 _keys[0][_event.key.keysym.scancode] = true;

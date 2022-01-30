@@ -1,6 +1,6 @@
 #include "shaders.h"
 
-Shader::Shader(const char* vertexFile, const char* fragmentFile)
+void Shader::create(const char* vertexFile, const char* fragmentFile)
 {
     program = glCreateProgram();
 

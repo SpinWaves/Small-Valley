@@ -6,6 +6,7 @@
 #endif
 
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
 #include <GL/glew.h>
 #include <Kernel/sysout.h>
 #include <cstdint>
@@ -14,5 +15,8 @@
 #include <initializer_list>
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <array>
+#include <vector>
+#include <memory>
 
 #endif // __PCH__

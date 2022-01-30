@@ -10,27 +10,25 @@ class Camera3D
 	public:
 		Camera3D();
 
-		void update();
 		void onEvent(const Input& input);
 		void look();
 
-		void setPosition(int pos_x, int pos_y, int pos_z);
+		inline void setPosition(int pos_x, int pos_y, int pos_z) noexcept { _position.SET(pos_x, pos_y, pos_z); }
 
 		~Camera3D() = default;
 
 	private:
-		double _speed = 0.1;
-		double _sensivity;
+		double _speed = 0.15;
+		double _sensivity = 0.6;
 
-		double _theta;
-		double _phi;
+		double _theta = 0;
+		double _phi = -79;
 
 		double realspeed;
 		
 		SDL_bool _grabMouse = SDL_FALSE;
 
 		void VectorsFromAngles();
-		void Move(double x, double y, double z);
 
 		Vec3<double> _movement;
 

@@ -4,22 +4,8 @@
 Camera3D::Camera3D()
 {
 	_position.SET(0, 0, 0);
-	_phi = -79;
-	_theta = 0;
-	VectorsFromAngles();
 	_up.SET(0, 0, 1);
-	_sensivity = 0.6;
-}
-
-void Camera3D::setPosition(int pos_x, int pos_y, int pos_z)
-{
-	_position.SET(pos_x, pos_y, pos_z);
-}
-
-void Camera3D::update()
-{
-	_movement.SET(0, 0, 0);
-	_target = _position + _direction;
+	VectorsFromAngles();
 }
 
 void Camera3D::onEvent(const Input& input)
@@ -31,7 +17,7 @@ void Camera3D::onEvent(const Input& input)
 		VectorsFromAngles();
 	}
 
-	if(input.getInKey(SDL_SCANCODE_F1))
+	if(input.getInKey(SDL_SCANCODE_F1, action::up))
 	{
 		_grabMouse = _grabMouse ? SDL_FALSE : SDL_TRUE;
 		SDL_SetRelativeMouseMode(_grabMouse);
@@ -42,7 +28,9 @@ void Camera3D::onEvent(const Input& input)
 		SDL_SetRelativeMouseMode(SDL_TRUE);
 	}
 
-	realspeed = (input.getInKey(SDL_SCANCODE_EXECUTE)) ? 10 * _speed : _speed;
+	_movement.SET(0, 0, 0);
+
+	realspeed = (input.getInKey(SDL_SCANCODE_Q)) ? 10 * _speed : _speed;
 
 	if(input.getInKey(SDL_SCANCODE_W) || input.getInKey(SDL_SCANCODE_UP))
 		_movement -= _forward;
@@ -57,14 +45,7 @@ void Camera3D::onEvent(const Input& input)
 	if(input.getInKey(SDL_SCANCODE_SPACE))
 		_movement += _up;
 
-	Move(_movement.X, _movement.Y, _movement.Z); // update
-}
-
-void Camera3D::Move(double x, double y, double z)
-{
-	_position.X += x * realspeed;
-	_position.Y += y * realspeed;
-	_position.Z += z * realspeed;
+	_position += _movement * realspeed;
 }
 
 void Camera3D::VectorsFromAngles()
@@ -85,7 +66,7 @@ void Camera3D::VectorsFromAngles()
 
 void Camera3D::look()
 {
+	_target = _position + _direction;
     Matrixes::matrix_mode(matrix::view);
-    Matrixes::load_identity();
     Matrixes::lookAt(_position.X, _position.Y, _position.Z, _target.X, _target.Y, _target.Z, 0, 0, 1);
 }
