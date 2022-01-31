@@ -1,10 +1,5 @@
 #include "maths.h"
 
-int randint(int a, int b)
-{
-    return rand() % (b - a) + a;
-}
-
 bool rand_probability(double proba)
 {
     if(proba < 1)
@@ -27,7 +22,23 @@ float rsqrt(float number)
     i = 0x5f3759df - (i >> 1);
     y = *(float*)&i;
     y = y * (threehalfs - (x2 * y * y));
-    y = y * (threehalfs - (x2 * y * y));
+    #ifdef MATHS_EXTRA_PRECISION
+        y = y * (threehalfs - (x2 * y * y));
+    #endif
 
     return y;
+}
+
+double __cos(double x) noexcept
+{
+    constexpr double tp = 1./(2.*M_PI);
+    x *= tp;
+    x -= double(.25) + std::floor(x + double(.25));
+    x *= double(16.) * (std::abs(x) - double(.5));
+    
+    #ifdef MATHS_EXTRA_PRECISION
+        x += double(.225) * x * (std::abs(x) - double(1.));
+    #endif
+    
+    return x;
 }

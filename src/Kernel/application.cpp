@@ -1,7 +1,7 @@
 #include "application.h"
 #include <graphics/matrixes.h>
 
-Application::Application() : _shader(), _camera(), _cube() {}
+Application::Application() : _shader(), _camera() {}
 
 void Application::init(const char* name)
 {
@@ -9,7 +9,7 @@ void Application::init(const char* name)
     if(!_win)
     {
         SDL_Quit();
-        log::report(log_type::fatal_error, "Unable to create the window");
+        log::report(log_type::fatal_error, "unable to create the window");
     }
 
     _context = SDL_GL_CreateContext(_win);
@@ -17,7 +17,7 @@ void Application::init(const char* name)
     {
         SDL_DestroyWindow(_win);
         SDL_Quit();
-        log::report(log_type::fatal_error, "Unable to create OpenGL context");
+        log::report(log_type::fatal_error, "unable to create OpenGL context");
     }
     SDL_GL_MakeCurrent(_win, _context);
 
@@ -26,7 +26,7 @@ void Application::init(const char* name)
     {
         SDL_DestroyWindow(_win);
         SDL_Quit();
-        log::report(log_type::fatal_error, "Unable to init GLEW");
+        log::report(log_type::fatal_error, "unable to init GLEW");
     }
 
     _shader.create(MAIN_DIR"src/graphics/shaders/main_3D.vert", MAIN_DIR"src/graphics/shaders/main_3D.frag");
@@ -37,11 +37,11 @@ void Application::init(const char* name)
     _tex = new Texture();
     _tex->load_texture(RES_DIR"assets/grass.jpg");
 
-    _cube.create(1, 1, 1);
-
     glDepthMask(GL_TRUE);
     glEnable(GL_DEPTH_TEST);
     glActiveTexture(GL_TEXTURE0);
+
+    _world = World::create();
 }
 
 void Application::update(const Input& in)
@@ -60,16 +60,17 @@ void Application::update(const Input& in)
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glClearColor(0.49f, 0.66f, 0.85f, 1.0f);
 
+    _shader.setMat4("model", Matrixes::get_matrix(matrix::model));
     _shader.setMat4("view", Matrixes::get_matrix(matrix::view));
     _shader.setMat4("proj", Matrixes::get_matrix(matrix::proj));
-    _shader.setMat4("model", Matrixes::get_matrix(matrix::model));
 
     glEnable(GL_TEXTURE_2D);
     _tex->bind_texture();
 
-    _cube.render();
+    _world->render(_shader);
 
     _tex->unbind_texture();
+
 
     SDL_GL_SwapWindow(_win);
 }

@@ -1,3 +1,4 @@
 build/
 .xmake/
 build-int/
+.vscode/

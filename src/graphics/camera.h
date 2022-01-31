@@ -18,24 +18,20 @@ class Camera3D
 		~Camera3D() = default;
 
 	private:
-		double _speed = 0.15;
-		double _sensivity = 0.6;
+		const float _speed = 0.0025f;
+		const float _sensivity = 0.6f;
 
 		double _theta = 0;
 		double _phi = -79;
 
-		double realspeed;
-		
-		SDL_bool _grabMouse = SDL_FALSE;
+		SDL_bool _isMouseGrabed = SDL_FALSE;
 
-		void VectorsFromAngles();
-
-		Vec3<double> _movement;
+		void update_view();
 
 		Vec3<double> _position;
 		Vec3<double> _left;
 		Vec3<double> _forward;
-		Vec3<double> _up;
+		const Vec3<double> _up;
 		Vec3<double> _target;
 		Vec3<double> _direction;
 };

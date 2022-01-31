@@ -5,7 +5,8 @@
 #include <io/inputs.h>
 #include <graphics/shaders.h>
 #include <graphics/camera.h>
-#include <entities/cube.h>
+#include <entities/world.h>
+#include <graphics/textures.h>
 
 class Application
 {
@@ -24,8 +25,8 @@ class Application
 
         Shader _shader;
         Camera3D _camera;
-        Cube _cube;
         Texture* _tex = nullptr;
+        std::shared_ptr<World> _world;
 };
 
 #endif // __APPLICATION__
