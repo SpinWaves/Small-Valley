@@ -1,7 +1,19 @@
 #include "cube.h"
+#include "world.h"
 #include <graphics/matrixes.h>
 
 Cube::Cube(std::shared_ptr<World> world) : _world(std::move(world)) {}
+
+void Cube::set_pos(Vec3<int> pos) noexcept 
+{
+    _vPos = std::move(pos);
+    _world->set_block(_vPos.X, _vPos.Y, _vPos.Z, 1);
+}
+void Cube::set_pos(int x, int y, int z) noexcept
+{
+    _vPos.SET(x, y, z);
+    _world->set_block(x, y, z, 1);
+}
 
 void Cube::create(int x, int y, int z)
 {
@@ -33,7 +45,7 @@ void Cube::create(int x, int y, int z)
         0, 0,   0, 1,   1, 1,   1, 0  // bottom
     };
 
-    unsigned int indices[36] = {
+    unsigned char indices[36] = {
          0,  1,  2,   2,  3,  0, // top
          4,  5,  6,   6,  7,  4, // back
          8,  9, 10,  10, 11,  8, // left
@@ -97,7 +109,7 @@ void Cube::render(Shader& shader)
     glBindVertexArray(_vao);
   
     std::cout << "test3" << std::endl;
-    glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+    glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_BYTE, 0);
     
     std::cout << "test4" << std::endl;
     glBindVertexArray(0);

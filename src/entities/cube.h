@@ -5,16 +5,15 @@
 #include <maths/vec3.h>
 #include <graphics/textures.h>
 #include <graphics/shaders.h>
-#include "world.h"
 
 class Cube
 {
     public:
-        Cube(std::shared_ptr<World> world);
+        Cube(std::shared_ptr<class World> world);
 
-        inline void set_pos(Vec3<int> pos) noexcept { _vPos = std::move(pos); _world->set_block(_vPos.X, _vPos.Y, _vPos.Z, 1); }
-        inline void set_pos(int x, int y, int z) noexcept { _vPos.SET(x, y, z); _world->set_block(x, y, z, 1); }
-
+        void set_pos(Vec3<int> pos) noexcept;
+        void set_pos(int x, int y, int z) noexcept;
+        
         void create(int x, int y, int z);
         void render(Shader& shader);
 
@@ -26,7 +25,7 @@ class Cube
         GLuint _vao = 0;
 
         Vec3<int> _vPos;
-        std::shared_ptr<World> _world;
+        std::shared_ptr<class World> _world;
 
         std::array<std::shared_ptr<Texture>, 6> _texture_atlas;
 };

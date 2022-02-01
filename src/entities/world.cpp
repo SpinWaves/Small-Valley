@@ -1,5 +1,6 @@
 #include "world.h"
-#include "cube.h"
+
+World::World() : _cube(new Cube(std::move(get_ptr()))) {}
 
 std::shared_ptr<World> World::create()
 {
@@ -7,13 +8,10 @@ std::shared_ptr<World> World::create()
 
     std::array<int, WORLD_SIZE> temp;
     temp.fill(0);
-    std::array<std::array<int, WORLD_SIZE>, WORLD_SIZE> temp_2;
-    temp_2.fill(std::move(temp));
    
-    world->_map.fill(std::move(temp_2));
-    world->_cube = std::move(std::make_shared<Cube>(std::move(world->get_ptr())));
+    world->_map.fill(std::move(temp));
 
-    return world;
+    return std::move(world);
 }
 
 void World::render(Shader& shader)
@@ -22,11 +20,8 @@ void World::render(Shader& shader)
     {
         for(int j = 1; j <= _planet_size; j++)
         {
-            for(int k = 1; k <= _planet_size; k++)
-            {
-                _cube->set_pos(i, j, k);
-                _cube->render(shader);
-            }
+            _cube->set_pos(i, j, 0);
+            _cube->render(shader);
         }
     }
 }

@@ -18,18 +18,7 @@ void Input::update()
 {
     _xRel = 0;
     _yRel = 0;
-/*
-    for(int i = 0; i < SDL_NUM_SCANCODES; i++)
-    {
-        _keys[0][i] = false;
-        _keys[1][i] = false;
-        if(i < 8)
-        {
-            _mouse[0][i] = false;
-            _mouse[1][i] = false;
-        }
-    }
-*/
+    
     if(SDL_PollEvent(&_event))
     {
         if(_event.window.event == SDL_WINDOWEVENT_CLOSE) 
