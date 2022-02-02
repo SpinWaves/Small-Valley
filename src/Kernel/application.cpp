@@ -1,7 +1,7 @@
 #include "application.h"
 #include <graphics/matrixes.h>
 
-Application::Application() : _shader(), _camera() {}
+Application::Application() : _shader(), _camera(), _cube() {}
 
 void Application::init(const char* name)
 {
@@ -39,14 +39,17 @@ void Application::init(const char* name)
 
     glDepthMask(GL_TRUE);
     glEnable(GL_DEPTH_TEST);
+    glEnable(GL_TEXTURE_2D);
     glActiveTexture(GL_TEXTURE0);
+    glProvokingVertex(GL_FIRST_VERTEX_CONVENTION);
 
     _world = World::create();
+    _cube.create(0, 0, 0);
 }
 
 void Application::update(const Input& in)
 {
-    SDL_GL_SetSwapInterval(0);
+    SDL_GL_SetSwapInterval(1);
 
     _camera.onEvent(in);
     _camera.look();
@@ -60,17 +63,26 @@ void Application::update(const Input& in)
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glClearColor(0.49f, 0.66f, 0.85f, 1.0f);
 
+    _shader.bindShader();
+
     _shader.setMat4("model", Matrixes::get_matrix(matrix::model));
     _shader.setMat4("view", Matrixes::get_matrix(matrix::view));
     _shader.setMat4("proj", Matrixes::get_matrix(matrix::proj));
 
-    glEnable(GL_TEXTURE_2D);
     _tex->bind_texture();
-
-    _world->render(_shader);
-
+    for(int x = 0; x < 20; x += 2)
+    {
+        for(int z = 0; z < 20; z += 2)
+        {
+            _cube.set_pos(x, z, -2);
+            _cube.render(_shader);
+        }
+    }
     _tex->unbind_texture();
+ 
+    _shader.unbindShader();
 
+    _world->render();
 
     SDL_GL_SwapWindow(_win);
 }

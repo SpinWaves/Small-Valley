@@ -327,7 +327,7 @@ double Vec3<T>::length()const
 }
 
 template <class T>
-Vec3<T> & Vec3<T>::normalize()
+Vec3<T>& Vec3<T>::normalize()
 {
     (*this) /= length();
     return (*this);

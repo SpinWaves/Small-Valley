@@ -2,17 +2,13 @@
 #include "world.h"
 #include <graphics/matrixes.h>
 
-Cube::Cube(std::shared_ptr<World> world) : _world(std::move(world)) {}
-
 void Cube::set_pos(Vec3<int> pos) noexcept 
 {
     _vPos = std::move(pos);
-    _world->set_block(_vPos.X, _vPos.Y, _vPos.Z, 1);
 }
 void Cube::set_pos(int x, int y, int z) noexcept
 {
     _vPos.SET(x, y, z);
-    _world->set_block(x, y, z, 1);
 }
 
 void Cube::create(int x, int y, int z)
@@ -35,6 +31,15 @@ void Cube::create(int x, int y, int z)
          1.0f,-1.0f,-1.0f,  -1.0f,-1.0f,-1.0f,  -1.0f, 1.0f,-1.0f,  1.0f, 1.0f,-1.0f  // bottom
     };
 
+    float normals[72] = {
+             0, 0, 1,   0, 0, 1,   0, 0, 1,   0, 0, 1,  // top
+             1, 0, 0,   1, 0, 0,   1, 0, 0,   1, 0, 0,  // back
+             0, 1, 0,   0, 1, 0,   0, 1, 0,   0, 1, 0,  // left
+            -1, 0, 0,  -1, 0, 0,  -1, 0, 0,  -1, 0, 0,  // front
+             0,-1, 0,   0,-1, 0,   0,-1, 0,   0,-1, 0,  // right
+             0, 0,-1,   0, 0,-1,   0, 0,-1,   0, 0,-1   // bottom
+    };
+
     // texture coord array
     float coords_tex[48] = {
         0, 0,   0, 1,   1, 1,   1, 0, // top
@@ -55,10 +60,6 @@ void Cube::create(int x, int y, int z)
     };
 
     glGenVertexArrays(1, &_vao);
-
-    if(glIsVertexArray(_vao) != GL_TRUE)
-        log::report(log_type::fatal_error, "unable to generate a Vertex Array Object (VAO)");
-
 	glBindVertexArray(_vao);
 
     if(glIsBuffer(_vbo) == GL_TRUE)
@@ -66,33 +67,37 @@ void Cube::create(int x, int y, int z)
     if(glIsBuffer(_ebo) == GL_TRUE)
         glDeleteBuffers(1, &_ebo);
 
-	glGenBuffers(1, &_vbo);
-    if(glIsBuffer(_vbo) != GL_TRUE)
-        log::report(log_type::fatal_error, "unable to generate a Vertex Buffer Object (VBO)");
-    
+	glGenBuffers(1, &_vbo);    
     glGenBuffers(1, &_ebo);
-    if(glIsBuffer(_ebo) != GL_TRUE)
-        log::report(log_type::fatal_error, "unable to generate an Element Buffer Object (EBO)");
 
 	glBindBuffer(GL_ARRAY_BUFFER, _vbo);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices) + sizeof(coords_tex), 0, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices) + sizeof(coords_tex) + sizeof(normals), 0, GL_STATIC_DRAW);
 
     glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
     glBufferSubData(GL_ARRAY_BUFFER, sizeof(vertices), sizeof(coords_tex), coords_tex);
+    glBufferSubData(GL_ARRAY_BUFFER, sizeof(vertices) + sizeof(coords_tex), sizeof(normals), normals);
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _ebo);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, (void*)(sizeof(vertices)));
+    glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, 0, (void*)(sizeof(vertices) + sizeof(coords_tex)));
 	
 	glEnableVertexAttribArray(0);
 	glEnableVertexAttribArray(2);
+	glEnableVertexAttribArray(3);
 
     glBindVertexArray(0);
 
+    if(glIsBuffer(_ebo) != GL_TRUE)
+        log::report(log_type::fatal_error, "unable to generate an Element Buffer Object (EBO)");
+    if(glIsBuffer(_vbo) != GL_TRUE)
+        log::report(log_type::fatal_error, "unable to generate a Vertex Buffer Object (VBO)");
+    if(glIsVertexArray(_vao) != GL_TRUE)
+        log::report(log_type::fatal_error, "unable to generate a Vertex Array Object (VAO)");
+
     _vPos.SET(x, y, z);
-    _world->set_block(x, y, z, 1);
 
     //_texture_atlas = std::move(texture_atlas);
 }
@@ -108,12 +113,11 @@ void Cube::render(Shader& shader)
 
     glBindVertexArray(_vao);
   
-    std::cout << "test3" << std::endl;
     glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_BYTE, 0);
     
-    std::cout << "test4" << std::endl;
     glBindVertexArray(0);
-    std::cout << "test5" << std::endl;
+
+    Matrixes::load_identity();
 
     //if(!_texture_atlas.empty())
     //    _texture_atlas[0]->unbind_texture();

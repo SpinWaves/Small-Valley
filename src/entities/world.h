@@ -3,29 +3,37 @@
 
 #include <pch.h>
 #include <graphics/shaders.h>
-#include "cube.h"
-
-#define WORLD_SIZE 60
+#include <maths/vec3.h>
 
 class World : public std::enable_shared_from_this<World>
 {
+    inline static constexpr const int _world_size = 10;
+    
     public:
+        template <typename T>
+        using map_type = std::array<std::array<T, _world_size>, _world_size>;
+
         static std::shared_ptr<World> create();
         inline std::shared_ptr<World> get_ptr() { return shared_from_this(); }
+        float get_height(int x, int z) noexcept;
 
-        void render(Shader& shader);
-        inline int get_block(int x, int y, int z) noexcept { return _map[x][y]; }
-        inline void set_block(int x, int y, int z, int type) noexcept { _map[x][y] = type; }
-        inline constexpr const unsigned int get_planet_size() const noexcept { return _planet_size; }
+        void render();
 
-        ~World() = default;
+        ~World();
 
     private:
-        World(); // placing constructor here so the create function can access it, but not the user
+        World() = default; // placing constructor here so the create function can access it, but not the user
+        void load_meshes();
 
-        std::array<std::array<int, WORLD_SIZE>, WORLD_SIZE> _map;
-        inline static constexpr const unsigned int _planet_size = 20;
-        std::shared_ptr<Cube> _cube;
+        map_type<Vec3<float>> generate_normals();
+        Vec3<float> calculate_normal(int x, int z) noexcept;
+
+        GLuint _vbo = 0;
+        GLuint _ebo = 0;
+        GLuint _vao = 0;
+
+        map_type<int> _map;
+        Shader _shader;
 };
 
 #endif // __WORLD__

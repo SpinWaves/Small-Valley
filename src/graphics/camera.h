@@ -18,8 +18,8 @@ class Camera3D
 		~Camera3D() = default;
 
 	private:
-		const float _speed = 0.0025f;
-		const float _sensivity = 0.6f;
+		const float _speed = 0.15f;
+		const float _sensivity = 1.2f;
 
 		double _theta = 0;
 		double _phi = -79;

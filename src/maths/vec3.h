@@ -63,7 +63,7 @@ struct Vec3
 
     Vec3 crossProduct(const Vec3 & v)const;
     double length()const;
-    Vec3 & normalize();
+    Vec3& normalize();
 
     Vec3 COPY(const Vec3 &v);
     Vec3 DirectCopy();

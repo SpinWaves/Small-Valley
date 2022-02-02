@@ -1,12 +1,10 @@
 #version 330 core
 
-out vec2 texCoords;
-out vec4 Color;
+flat out vec3 color;
 
-layout (location = 0) in vec3 aPos;
-layout (location = 1) in vec4 aColor;
-layout (location = 2) in vec2 texCoordIn;
-layout (location = 3) in vec3 in_normal;
+layout (location = 0) in vec3 in_pos;
+layout (location = 1) in vec4 in_color;
+layout(location = 2) in vec4 in_normal;
 
 uniform mat4 view;
 uniform mat4 proj;
@@ -26,10 +24,10 @@ vec3 calculateLighting()
 
 void main(void)
 {
-    vec4 fragPos = vec4(model * vec4(aPos, 1.0));
+    vec4 fragPos = vec4(model * vec4(in_pos, 1.0));
+	
 	vec3 lighting = calculateLighting();
-    Color = vec4(lighting, 1.0);
-    texCoords = texCoordIn;
+    color = in_color.rgb * lighting;
 
     gl_Position = proj * view * fragPos;
 }

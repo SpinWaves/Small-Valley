@@ -9,7 +9,7 @@
 class Cube
 {
     public:
-        Cube(std::shared_ptr<class World> world);
+        Cube() = default;
 
         void set_pos(Vec3<int> pos) noexcept;
         void set_pos(int x, int y, int z) noexcept;
@@ -25,7 +25,6 @@ class Cube
         GLuint _vao = 0;
 
         Vec3<int> _vPos;
-        std::shared_ptr<class World> _world;
 
         std::array<std::shared_ptr<Texture>, 6> _texture_atlas;
 };

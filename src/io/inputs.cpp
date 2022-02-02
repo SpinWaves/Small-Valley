@@ -19,7 +19,7 @@ void Input::update()
     _xRel = 0;
     _yRel = 0;
     
-    if(SDL_PollEvent(&_event))
+    while(SDL_PollEvent(&_event))
     {
         if(_event.window.event == SDL_WINDOWEVENT_CLOSE) 
             _end = true;

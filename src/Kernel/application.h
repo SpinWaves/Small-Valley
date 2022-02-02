@@ -6,6 +6,7 @@
 #include <graphics/shaders.h>
 #include <graphics/camera.h>
 #include <entities/world.h>
+#include <entities/cube.h>
 #include <graphics/textures.h>
 
 class Application
@@ -27,6 +28,7 @@ class Application
         Camera3D _camera;
         Texture* _tex = nullptr;
         std::shared_ptr<World> _world;
+        Cube _cube;
 };
 
 #endif // __APPLICATION__

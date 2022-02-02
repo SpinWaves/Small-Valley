@@ -155,6 +155,7 @@ void Shader::createShader(const char* source, int type)
 
         glGetShaderInfoLog(shader, logsize, &logsize, log);
 
+        std::cout << std::endl;
         log::report(log_type::error, "something went wrong while compiling the shader : %s", _filename);
         log::report(log_type::error, log);
 

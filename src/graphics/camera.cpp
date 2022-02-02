@@ -43,8 +43,8 @@ void Camera3D::onEvent(const Input& input)
 
 void Camera3D::update_view()
 {
-	_phi = _phi > 90 ? 90 : _phi;
-	_phi = _phi < -90 ? -90 : _phi;
+	_phi = _phi > 89 ? 89 : _phi;
+	_phi = _phi < -89 ? -89 : _phi;
 
 	_direction.X = cos(_phi * M_PI / 180) * cos(_theta * M_PI / 180);
 	_direction.Y = cos(_phi * M_PI / 180) * sin(_theta * M_PI / 180);	// Spherical coordinate system
