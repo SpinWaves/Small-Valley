@@ -10,28 +10,6 @@ float World::get_height(int x, int z) noexcept
     return _map[z][x];
 }
 
-Vec3<float> World::calculate_normal(int x, int z) noexcept
-{
-    float heightL = get_height(x - 1, z);
-    float heightR = get_height(x + 1, z);
-    float heightD = get_height(x, z - 1);
-    float heightU = get_height(x, z + 1);
-    Vec3<float> normal(heightL - heightR, 2.0f, heightD - heightU);
-    normal.normalize();
-    return std::move(normal);
-}
-
-World::map_type<Vec3<float>> World::generate_normals()
-{
-    World::map_type<Vec3<float>> normals;
-    for(int z = 0; z < _world_size; z++)
-    {
-        for(int x = 0; x < _world_size; x++)
-            normals[z][x] = calculate_normal(x, z);
-    }
-    return std::move(normals);
-}
-
 std::shared_ptr<World> World::create()
 {
     std::shared_ptr<World> world(new World());
@@ -57,88 +35,12 @@ std::shared_ptr<World> World::create()
     return std::move(world);
 }
 
-int quantizeNormalized(float original, int highestLevel, bool is_signed)
-{
-    if(is_signed)
-        original = original * 0.5f + 0.5f;
-
-    return round(original * highestLevel);
-}
-
-int pack_int(float x, float y, float z, float w)
-{
-    int TEN_BITS_MAX = (int)(pow(2, 10) - 1);
-	int TWO_BITS_MAX = (int)(pow(2, 2) - 1);
-
-    int val = 0;
-    val = val | (quantizeNormalized(w, TWO_BITS_MAX, false) << 30);
-    val = val | (quantizeNormalized(z, TEN_BITS_MAX, true) << 20);
-    val = val | (quantizeNormalized(y, TEN_BITS_MAX, true) << 10);
-    val = val | quantizeNormalized(x, TEN_BITS_MAX, true);
-    return val;
-}
-
-int storeQuad1(std::vector<int>& indices, int pointer, int topLeft, int topRight, int bottomLeft, int bottomRight, bool mixed)
-{
-    indices[pointer++] = topLeft;
-    indices[pointer++] = bottomLeft;
-    indices[pointer++] = mixed ? topRight : bottomRight;
-    indices[pointer++] = bottomRight;
-    indices[pointer++] = topRight;
-    indices[pointer++] = mixed ? bottomLeft : topLeft;
-    return pointer;
-}
-
-int storeQuad2(std::vector<int>& indices, int pointer, int topLeft, int topRight, int bottomLeft, int bottomRight, bool mixed)
-{
-    indices[pointer++] = topRight;
-    indices[pointer++] = topLeft;
-    indices[pointer++] = mixed ? bottomRight : bottomLeft;
-    indices[pointer++] = bottomLeft;
-    indices[pointer++] = bottomRight;
-    indices[pointer++] = mixed ? topLeft : topRight;
-    return pointer;
-}
-
-std::vector<int> generateIndexBuffer(int vertexCount)
-{
-    int indexCount = (vertexCount - 1) * (vertexCount - 1) * 6;
-    std::vector<int> indices;
-    indices.resize(indexCount);
-    int pointer = 0;
-    for(int col = 0; col < vertexCount - 1; col++)
-    {
-        for(int row = 0; row < vertexCount - 1; row++)
-        {
-            int topLeft = (row * vertexCount) + col;
-            int topRight = topLeft + 1;
-            int bottomLeft = ((row + 1) * vertexCount) + col;
-            int bottomRight = bottomLeft + 1;
-            if(row % 2 == 0)
-                pointer = storeQuad1(indices, pointer, topLeft, topRight, bottomLeft, bottomRight, col % 2 == 0);
-            else
-                pointer = storeQuad2(indices, pointer, topLeft, topRight, bottomLeft, bottomRight, col % 2 == 0);
-        }
-    }
-    return std::move(indices);
-}
-
 void World::load_meshes()
 {
-    std::vector<int> vertices;
+    std::vector<float> vertices;
     std::vector<float> normals;
-    for(int z = 0; z < _world_size; z++)
-    {
-        for(int x = 0; x < _world_size; x++)
-        {
-            vertices.push_back(x);
-            vertices.push_back(_map[z][x]);
-            vertices.push_back(z);
-
-            normals.push_back(pack_int(generate_normals()[z][x].X, generate_normals()[z][x].Y, generate_normals()[z][x].Z, 0.0f));
-        }
-    }
-    std::vector<int> indices = std::move(generateIndexBuffer(_map.size()));
+    std::vector<unsigned int> indices;
+    _indices_nb = indices.size();
 
     glGenVertexArrays(1, &_vao);
 	glBindVertexArray(_vao);
@@ -162,7 +64,7 @@ void World::load_meshes()
 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
     //glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (void*)(sizeof(vertices)));
-    glVertexAttribPointer(2, 4, GL_UNSIGNED_INT_2_10_10_10_REV, GL_TRUE, 0, (void*)vertices.size());
+    glVertexAttribPointer(2, 4, GL_UNSIGNED_INT_2_10_10_10_REV, GL_FALSE, 0, (void*)vertices.size());
 	
 	glEnableVertexAttribArray(0); // vertices
 	//glEnableVertexAttribArray(1); // color
@@ -188,7 +90,7 @@ void World::render()
 
     glBindVertexArray(_vao);
   
-    glDrawElements(GL_TRIANGLES, _map.size(), GL_UNSIGNED_INT, 0);
+    glDrawElements(GL_TRIANGLES, _indices_nb, GL_UNSIGNED_INT, 0);
     
     glBindVertexArray(0);
 

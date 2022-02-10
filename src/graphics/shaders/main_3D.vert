@@ -28,7 +28,7 @@ void main(void)
 {
     vec4 fragPos = vec4(model * vec4(aPos, 1.0));
 	vec3 lighting = calculateLighting();
-    Color = vec4(lighting, 1.0);
+    Color = vec4(lighting * 5, 1.0);
     texCoords = texCoordIn;
 
     gl_Position = proj * view * fragPos;

@@ -24,13 +24,12 @@ class World : public std::enable_shared_from_this<World>
     private:
         World() = default; // placing constructor here so the create function can access it, but not the user
         void load_meshes();
-
-        map_type<Vec3<float>> generate_normals();
-        Vec3<float> calculate_normal(int x, int z) noexcept;
-
+        
         GLuint _vbo = 0;
         GLuint _ebo = 0;
         GLuint _vao = 0;
+
+        int _indices_nb = 0;
 
         map_type<int> _map;
         Shader _shader;

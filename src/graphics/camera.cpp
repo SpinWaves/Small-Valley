@@ -26,7 +26,11 @@ void Camera3D::onEvent(const Input& input)
 		_isMouseGrabed = SDL_TRUE;
 		SDL_SetRelativeMouseMode(SDL_TRUE);
 	}
+	
+	_speed = 0.15f;
 
+	if(input.getInKey(SDL_SCANCODE_Q))
+		_speed = 0.3f;
 	if(input.getInKey(SDL_SCANCODE_W) || input.getInKey(SDL_SCANCODE_UP))
 		_position -= _forward * _speed;
 	if(input.getInKey(SDL_SCANCODE_S) || input.getInKey(SDL_SCANCODE_DOWN))
