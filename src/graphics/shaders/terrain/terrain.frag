@@ -1,10 +1,20 @@
-#version 330
+// Copyright (C) 2022 SpinWaves (https://github.com/SpinWaves)
+// This file is a part of "Small Valley"
+// For conditions of distribution and use, see the LICENSE
+//
+// Author : kbz_8 (https://solo.to/kbz_8)
 
-flat in vec3 color;
+#version 330 core
 
-out vec4 out_color;
+out vec4 fragColor;
+
+uniform sampler2D tex;
+
+in vec3 fragPos;
+in vec2 texCoords;
+in vec4 Color;
 
 void main(void)
 {
-	out_color = vec4(color, 1.0);
+    fragColor = texture(tex, texCoords) / Color;
 }

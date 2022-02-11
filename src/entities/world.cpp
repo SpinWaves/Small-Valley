@@ -1,3 +1,9 @@
+// Copyright (C) 2022 SpinWaves (https://github.com/SpinWaves)
+// This file is a part of "Small Valley"
+// For conditions of distribution and use, see the LICENSE
+//
+// Author : kbz_8 (https://solo.to/kbz_8)
+
 #include "world.h"
 #include <graphics/matrixes.h>
 
@@ -37,9 +43,74 @@ std::shared_ptr<World> World::create()
 
 void World::load_meshes()
 {
+    float vertices_top[12] = { 1.0f, 1.0f, 1.0f,  -1.0f, 1.0f, 1.0f,  -1.0f,-1.0f, 1.0f,  1.0f,-1.0f, 1.0f };
+    float vertices_back[12] = { 1.0f, 1.0f, 1.0f,   1.0f,-1.0f, 1.0f,   1.0f,-1.0f,-1.0f,  1.0f, 1.0f,-1.0f };
+    float vertices_left[12] = { 1.0f, 1.0f, 1.0f,   1.0f, 1.0f,-1.0f,  -1.0f, 1.0f,-1.0f, -1.0f, 1.0f, 1.0f };
+    float vertices_front[12] = { -1.0f, 1.0f, 1.0f,  -1.0f, 1.0f,-1.0f,  -1.0f,-1.0f,-1.0f, -1.0f,-1.0f, 1.0f };
+    float vertices_right[12] = { -1.0f,-1.0f,-1.0f,   1.0f,-1.0f,-1.0f,   1.0f,-1.0f, 1.0f, -1.0f,-1.0f, 1.0f };
+    float vertices_bottom[12] = { 1.0f,-1.0f,-1.0f,  -1.0f,-1.0f,-1.0f,  -1.0f, 1.0f,-1.0f,  1.0f, 1.0f,-1.0f };
+
+    float normals_top[12] = { 0, 0, 1,   0, 0, 1,   0, 0, 1,   0, 0, 1 };
+    float normals_back[12] = { 1, 0, 0,   1, 0, 0,   1, 0, 0,   1, 0, 0 };
+    float normals_left[12] = { 0, 1, 0,   0, 1, 0,   0, 1, 0,   0, 1, 0 };
+    float normals_front[12] = { -1, 0, 0,  -1, 0, 0,  -1, 0, 0,  -1, 0, 0 };
+    float normals_right[12] = { 0,-1, 0,   0,-1, 0,   0,-1, 0,   0,-1, 0 };
+    float normals_bottom[12] = { 0, 0,-1,   0, 0,-1,   0, 0,-1,   0, 0,-1 };
+
+    float coords_tex_top[8] = { 0, 0,   0, 1,   1, 1,   1, 0 };
+    float coords_tex_back[8] = { 1, 0,   0, 0,   0, 1,   1, 1 };
+    float coords_tex_left[8] = { 0, 0,   0, 1,   1, 1,   1, 0 };
+    float coords_tex_front[8] = { 0, 0,   0, 1,   1, 1,   1, 0 };
+    float coords_tex_right[8] = { 0, 1,   1, 1,   1, 0,   0, 0 };
+    float coords_tex_bottom[8] = { 0, 0,   0, 1,   1, 1,   1, 0 };
+
+    unsigned char indices_top[6] = { 0,  1,  2,   2,  3,  0 };
+    unsigned char indices_back[6] = { 4,  5,  6,   6,  7,  4 };
+    unsigned char indices_left[6] = { 8,  9, 10,  10, 11,  8 };
+    unsigned char indices_front[6] = { 12, 13, 14,  14, 15, 12 };
+    unsigned char indices_right[6] = { 16, 17, 18,  18, 19, 16 };
+    unsigned char indices_bottom[6] = { 20, 21, 22,  22, 23, 20 };
+
     std::vector<float> vertices;
     std::vector<float> normals;
+    std::vector<float> texture_coords;
     std::vector<unsigned int> indices;
+
+    for(int x = 0; x < _world_size; x++)
+    {
+        for(int z = 0; z < _world_size; z++)
+        {
+            // Adding all cubes info for tests
+            vertices.insert(vertices.end(), vertices_top, 12);
+            vertices.insert(vertices.end(), vertices_back, 12);
+            vertices.insert(vertices.end(), vertices_left, 12);
+            vertices.insert(vertices.end(), vertices_front, 12);
+            vertices.insert(vertices.end(), vertices_right, 12);
+            vertices.insert(vertices.end(), vertices_bottom, 12);
+
+            normals.insert(normals.end(), normals_top, 12);
+            normals.insert(normals.end(), normals_back, 12);
+            normals.insert(normals.end(), normals_left, 12);
+            normals.insert(normals.end(), normals_front, 12);
+            normals.insert(normals.end(), normals_right, 12);
+            normals.insert(normals.end(), normals_bottom, 12);
+
+            texture_coords.insert(texture_coords.end(), coords_tex_top, 8);
+            texture_coords.insert(texture_coords.end(), coords_tex_back, 8);
+            texture_coords.insert(texture_coords.end(), coords_tex_left, 8);
+            texture_coords.insert(texture_coords.end(), coords_tex_front, 8);
+            texture_coords.insert(texture_coords.end(), coords_tex_right, 8);
+            texture_coords.insert(texture_coords.end(), coords_tex_bottom, 8);
+
+            indices.insert(indices.end(), indices_top, 6);
+            indices.insert(indices.end(), indices_back, 6);
+            indices.insert(indices.end(), indices_left, 6);
+            indices.insert(indices.end(), indices_front, 6);
+            indices.insert(indices.end(), indices_right, 6);
+            indices.insert(indices.end(), indices_bottom, 6);
+        }
+    }
+
     _indices_nb = indices.size();
 
     glGenVertexArrays(1, &_vao);
@@ -54,10 +125,11 @@ void World::load_meshes()
     glGenBuffers(1, &_ebo);
     
 	glBindBuffer(GL_ARRAY_BUFFER, _vbo);
-	glBufferData(GL_ARRAY_BUFFER, vertices.size() + normals.size(), 0, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, vertices.size() + normals.size() + texture_coords.size(), 0, GL_STATIC_DRAW);
 
     glBufferSubData(GL_ARRAY_BUFFER, 0, vertices.size(), &vertices[0]);
     glBufferSubData(GL_ARRAY_BUFFER, vertices.size(), normals.size(), &normals[0]);
+    glBufferSubData(GL_ARRAY_BUFFER, texture_coords.size(), vertices.size() + normals.size(), &texture_coords[0]);
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _ebo);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size(), &indices[0], GL_STATIC_DRAW);
@@ -65,6 +137,7 @@ void World::load_meshes()
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
     //glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (void*)(sizeof(vertices)));
     glVertexAttribPointer(2, 4, GL_UNSIGNED_INT_2_10_10_10_REV, GL_FALSE, 0, (void*)vertices.size());
+    glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, 0, (void*)(vertices.size() + normals.size()));
 	
 	glEnableVertexAttribArray(0); // vertices
 	//glEnableVertexAttribArray(1); // color

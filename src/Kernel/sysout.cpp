@@ -1,3 +1,9 @@
+// Copyright (C) 2022 SpinWaves (https://github.com/SpinWaves)
+// This file is a part of "Small Valley"
+// For conditions of distribution and use, see the LICENSE
+//
+// Author : kbz_8 (https://solo.to/kbz_8)
+
 #include "sysout.h"
 
 void log::report(log_type type, std::string message, ...)

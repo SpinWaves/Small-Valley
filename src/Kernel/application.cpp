@@ -1,3 +1,9 @@
+// Copyright (C) 2022 SpinWaves (https://github.com/SpinWaves)
+// This file is a part of "Small Valley"
+// For conditions of distribution and use, see the LICENSE
+//
+// Author : kbz_8 (https://solo.to/kbz_8)
+
 #include "application.h"
 #include <graphics/matrixes.h>
 
@@ -63,26 +69,11 @@ void Application::update(const Input& in)
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glClearColor(0.49f, 0.66f, 0.85f, 1.0f);
 
-    _shader.bindShader();
-
-    _shader.setMat4("model", Matrixes::get_matrix(matrix::model));
-    _shader.setMat4("view", Matrixes::get_matrix(matrix::view));
-    _shader.setMat4("proj", Matrixes::get_matrix(matrix::proj));
-
     _tex->bind_texture();
-    for(int x = 0; x < 20; x += 2)
-    {
-        for(int z = 0; z < 20; z += 2)
-        {
-            _cube.set_pos(x, z, -2);
-            _cube.render(_shader);
-        }
-    }
-    _tex->unbind_texture();
- 
-    _shader.unbindShader();
 
     _world->render();
+    
+    _tex->unbind_texture();
 
     SDL_GL_SwapWindow(_win);
 }

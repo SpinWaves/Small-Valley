@@ -1,10 +1,17 @@
+// Copyright (C) 2022 SpinWaves (https://github.com/SpinWaves)
+// This file is a part of "Small Valley"
+// For conditions of distribution and use, see the LICENSE
+//
+// Author : kbz_8 (https://solo.to/kbz_8)
+
 #version 330 core
 
-flat out vec3 color;
+out vec2 texCoords;
+out vec4 Color;
 
-layout (location = 0) in vec3 in_pos;
-layout (location = 1) in vec4 in_color;
-layout(location = 2) in vec4 in_normal;
+layout (location = 0) in vec3 aPos;
+layout (location = 2) in vec3 in_normal;
+layout (location = 3) in vec2 texCoordIn;
 
 uniform mat4 view;
 uniform mat4 proj;
