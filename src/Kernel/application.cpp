@@ -40,9 +40,6 @@ void Application::init(const char* name)
 
     _camera.setPosition(-2, -2, 2);
 
-    _tex = new Texture();
-    _tex->load_texture(RES_DIR"assets/grass.jpg");
-
     glDepthMask(GL_TRUE);
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_TEXTURE_2D);
@@ -69,19 +66,13 @@ void Application::update(const Input& in)
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glClearColor(0.49f, 0.66f, 0.85f, 1.0f);
 
-    _tex->bind_texture();
-
     _world->render();
     
-    _tex->unbind_texture();
-
     SDL_GL_SwapWindow(_win);
 }
 
 void Application::destroy()
 {
-    delete _tex;
-    
     SDL_GL_DeleteContext(_context);
     SDL_DestroyWindow(_win);
     _win = nullptr;

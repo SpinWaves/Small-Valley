@@ -9,6 +9,7 @@
 
 #include <pch.h>
 #include <graphics/shaders.h>
+#include <graphics/textures.h>
 #include <maths/vec3.h>
 
 class World : public std::enable_shared_from_this<World>
@@ -39,6 +40,8 @@ class World : public std::enable_shared_from_this<World>
 
         map_type<int> _map;
         Shader _shader;
+        Texture _texture;
+
 };
 
 #endif // __WORLD__

@@ -6,12 +6,12 @@
 
 #version 330 core
 
-out vec2 texCoords;
-out vec4 Color;
+out vec2 out_tex_coords;
+out vec4 out_color;
 
-layout (location = 0) in vec3 aPos;
+layout (location = 0) in vec3 in_pos;
 layout (location = 2) in vec3 in_normal;
-layout (location = 3) in vec2 texCoordIn;
+layout (location = 3) in vec2 in_tex_coords;
 
 uniform mat4 view;
 uniform mat4 proj;
@@ -34,7 +34,9 @@ void main(void)
     vec4 fragPos = vec4(model * vec4(in_pos, 1.0));
 	
 	vec3 lighting = calculateLighting();
-    color = in_color.rgb * lighting;
+    out_color = vec4(lighting * 5, 1.0);
+
+	out_tex_coords = in_tex_coords;
 
     gl_Position = proj * view * fragPos;
 }

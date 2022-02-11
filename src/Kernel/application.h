@@ -32,7 +32,6 @@ class Application
 
         Shader _shader;
         Camera3D _camera;
-        Texture* _tex = nullptr;
         std::shared_ptr<World> _world;
         Cube _cube;
 };
