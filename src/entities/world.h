@@ -11,6 +11,7 @@
 #include <graphics/shaders.h>
 #include <graphics/textures.h>
 #include <maths/vec3.h>
+#include <maths/vec2.h>
 
 class World : public std::enable_shared_from_this<World>
 {
@@ -38,16 +39,23 @@ class World : public std::enable_shared_from_this<World>
         void load_meshes();
         
         GLuint _vbo = 0;
-        GLuint _ebo = 0;
         GLuint _vao = 0;
-        GLuint _instance_vbo = 0;
-        int _instance_nb = 0;
+
+        GLsizei _vertex_count = 0;
 
         height_map_type<int> _height_map;
         map_type<int> _map;
         Shader _shader;
         Texture _texture;
 
+        struct Vertex_Data
+        {
+            Vec3<float> pos;
+            Vec3<int> normals;
+            Vec2<int> texture_coords;
+        };
+        
+        std::vector<Vertex_Data> _cube_mesh;
 };
 
 #endif // __WORLD__

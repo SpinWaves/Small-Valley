@@ -66,41 +66,37 @@ std::shared_ptr<World> World::create()
 
 void World::load_meshes()
 {
-    float vertices[72] = {
-         0.5f, 0.5f, 0.5f,  -0.5f, 0.5f, 0.5f,  -0.5f,-0.5f, 0.5f,  0.5f,-0.5f, 0.5f, // top
-         0.5f, 0.5f, 0.5f,   0.5f,-0.5f, 0.5f,   0.5f,-0.5f,-0.5f,  0.5f, 0.5f,-0.5f, // back
-         0.5f, 0.5f, 0.5f,   0.5f, 0.5f,-0.5f,  -0.5f, 0.5f,-0.5f, -0.5f, 0.5f, 0.5f, // left
-        -0.5f, 0.5f, 0.5f,  -0.5f, 0.5f,-0.5f,  -0.5f,-0.5f,-0.5f, -0.5f,-0.5f, 0.5f, // front
-        -0.5f,-0.5f,-0.5f,   0.5f,-0.5f,-0.5f,   0.5f,-0.5f, 0.5f, -0.5f,-0.5f, 0.5f, // right
-         0.5f,-0.5f,-0.5f,  -0.5f,-0.5f,-0.5f,  -0.5f, 0.5f,-0.5f,  0.5f, 0.5f,-0.5f  // bottom
-    };
-
-    float normals[72] = {
-             0, 0, 1,   0, 0, 1,   0, 0, 1,   0, 0, 1,  // top
-             1, 0, 0,   1, 0, 0,   1, 0, 0,   1, 0, 0,  // back
-             0, 1, 0,   0, 1, 0,   0, 1, 0,   0, 1, 0,  // left
-            -1, 0, 0,  -1, 0, 0,  -1, 0, 0,  -1, 0, 0,  // front
-             0,-1, 0,   0,-1, 0,   0,-1, 0,   0,-1, 0,  // right
-             0, 0,-1,   0, 0,-1,   0, 0,-1,   0, 0,-1   // bottom
-    };
-
-    // texture coord array
-    float texture_coords[48] = {
-        0, 0,   0, 1,   1, 1,   1, 0, // top
-        1, 0,   0, 0,   0, 1,   1, 1, // back
-        0, 0,   0, 1,   1, 1,   1, 0, // left
-        0, 0,   0, 1,   1, 1,   1, 0, // front
-        0, 1,   1, 1,   1, 0,   0, 0, // right
-        0, 0,   0, 1,   1, 1,   1, 0  // bottom
-    };
-
-    unsigned char indices[36] = {
-         0,  1,  2,   2,  3,  0, // top
-         4,  5,  6,   6,  7,  4, // back
-         8,  9, 10,  10, 11,  8, // left
-        12, 13, 14,  14, 15, 12, // front
-        16, 17, 18,  18, 19, 16, // right
-        20, 21, 22,  22, 23, 20  // bottom
+    _cube_mesh = {
+        // top
+        World::Vertex_Data(Vec3<float>(0.5f, 0.5f, 0.5f), Vec3<int>(0, 0, 1), Vec2<int>(0, 0)),
+        World::Vertex_Data(Vec3<float>(-0.5f, 0.5f, 0.5f), Vec3<int>(0, 0, 1), Vec2<int>(0, 1)),
+        World::Vertex_Data(Vec3<float>(-0.5f, -0.5f, 0.5f), Vec3<int>(0, 0, 1), Vec2<int>(1, 1)),
+        World::Vertex_Data(Vec3<float>(0.5f, -0.5f, 0.5f), Vec3<int>(0, 0, 1), Vec2<int>(1, 0)),
+        // back
+        World::Vertex_Data(Vec3<float>(0.5f, 0.5f, 0.5f), Vec3<int>(1, 0, 0), Vec2<int>(1, 0)),
+        World::Vertex_Data(Vec3<float>(0.5f, -0.5f, 0.5f), Vec3<int>(1, 0, 0), Vec2<int>(0, 1)),
+        World::Vertex_Data(Vec3<float>(0.5f, -0.5f, -0.5f), Vec3<int>(1, 0, 0), Vec2<int>(0, 1)),
+        World::Vertex_Data(Vec3<float>(0.5f, 0.5f, -0.5f), Vec3<int>(1, 0, 0), Vec2<int>(1, 1)),
+        // left
+        World::Vertex_Data(Vec3<float>(0.5f, 0.5f, 0.5f), Vec3<int>(0, 1, 0), Vec2<int>(0, 0)),
+        World::Vertex_Data(Vec3<float>(0.5f, 0.5f, -0.5f), Vec3<int>(0, 1, 0), Vec2<int>(0, 1)),
+        World::Vertex_Data(Vec3<float>(-0.5f, 0.5f, -0.5f), Vec3<int>(0, 1, 0), Vec2<int>(1, 1)),
+        World::Vertex_Data(Vec3<float>(-0.5f, 0.5f, 0.5f), Vec3<int>(0, 1, 0), Vec2<int>(1, 0)),
+        // front
+        World::Vertex_Data(Vec3<float>(-0.5f, 0.5f, 0.5f), Vec3<int>(-1, 0, 0), Vec2<int>(0, 0)),
+        World::Vertex_Data(Vec3<float>(-0.5f, 0.5f, -0.5f), Vec3<int>(-1, 0, 0), Vec2<int>(0, 1)),
+        World::Vertex_Data(Vec3<float>(-0.5f, -0.5f, -0.5f), Vec3<int>(-1, 0, 0), Vec2<int>(1, 1)),
+        World::Vertex_Data(Vec3<float>(-0.5f, -0.5f, 0.5f), Vec3<int>(-1, 0, 0), Vec2<int>(1, 0)),
+        // right
+        World::Vertex_Data(Vec3<float>(-0.5f, -0.5f, -0.5f), Vec3<int>(0, -1, 0), Vec2<int>(0, 1)),
+        World::Vertex_Data(Vec3<float>(0.5f, -0.5f, -0.5f), Vec3<int>(0, -1, 0), Vec2<int>(1, 1)),
+        World::Vertex_Data(Vec3<float>(0.5f, -0.5f, 0.5f), Vec3<int>(0, -1, 0), Vec2<int>(1, 0)),
+        World::Vertex_Data(Vec3<float>(-0.5f, -0.5f, 0.5f), Vec3<int>(0, -1, 0), Vec2<int>(0, 0)),
+        // bottom
+        World::Vertex_Data(Vec3<float>(0.5f, -0.5f, -0.5f), Vec3<int>(0, 0, -1), Vec2<int>(0, 0)),
+        World::Vertex_Data(Vec3<float>(-0.5f, -0.5f, -0.5f), Vec3<int>(0, 0, -1), Vec2<int>(0, 1)),
+        World::Vertex_Data(Vec3<float>(-0.5f, 0.5f, -0.5f), Vec3<int>(0, 0, -1), Vec2<int>(1, 1)),
+        World::Vertex_Data(Vec3<float>(0.5f, 0.5f, -0.5f), Vec3<int>(0, 0, -1), Vec2<int>(1, 0)),
     };
 
     glm::mat4 translations[_world_size * _world_size * _world_size];
@@ -117,25 +113,13 @@ void World::load_meshes()
             }
         }
     }
-
-    if(glIsBuffer(_instance_vbo) == GL_TRUE)
-        glDeleteBuffers(1, &_instance_vbo);
-
-    glGenBuffers(1, &_instance_vbo);
-    glBindBuffer(GL_ARRAY_BUFFER, _instance_vbo);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(translations), translations, GL_STATIC_DRAW);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-
     glGenVertexArrays(1, &_vao);
 	glBindVertexArray(_vao);
 
     if(glIsBuffer(_vbo) == GL_TRUE)
         glDeleteBuffers(1, &_vbo);
-    if(glIsBuffer(_ebo) == GL_TRUE)
-        glDeleteBuffers(1, &_ebo);
 
 	glGenBuffers(1, &_vbo);
-    glGenBuffers(1, &_ebo);
     
 	glBindBuffer(GL_ARRAY_BUFFER, _vbo);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices) + sizeof(normals) + sizeof(texture_coords), 0, GL_STATIC_DRAW);
@@ -143,9 +127,6 @@ void World::load_meshes()
     glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
     glBufferSubData(GL_ARRAY_BUFFER, sizeof(vertices), sizeof(normals), normals);
     glBufferSubData(GL_ARRAY_BUFFER, sizeof(vertices) + sizeof(normals), sizeof(texture_coords), texture_coords);
-
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _ebo);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
     glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, 0, (void*)sizeof(vertices));
@@ -155,28 +136,8 @@ void World::load_meshes()
 	glEnableVertexAttribArray(2); // normals
     glEnableVertexAttribArray(3); // texture coords
 
-    glBindBuffer(GL_ARRAY_BUFFER, _instance_vbo);
-
-    glEnableVertexAttribArray(4);
-    glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4), (void*)0);
-    glEnableVertexAttribArray(5);
-    glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4), (void*)(sizeof(glm::vec4)));
-    glEnableVertexAttribArray(6);
-    glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4), (void*)(2 * sizeof(glm::vec4)));
-    glEnableVertexAttribArray(7);
-    glVertexAttribPointer(7, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4), (void*)(3 * sizeof(glm::vec4)));
-
-    glVertexAttribDivisor(4, 1);
-    glVertexAttribDivisor(5, 1);
-    glVertexAttribDivisor(6, 1);
-    glVertexAttribDivisor(7, 1);
-
     if(glIsBuffer(_vbo) != GL_TRUE)
         log::report(log_type::fatal_error, "unable to generate a Vertex Buffer Object (VBO) for the terrain mesh");
-    if(glIsBuffer(_ebo) != GL_TRUE)
-        log::report(log_type::fatal_error, "unable to generate a Element Buffer Object (EBO) for the terrain mesh");
-    if(glIsBuffer(_instance_vbo) != GL_TRUE)
-        log::report(log_type::fatal_error, "unable to generate a Instance Vertex Buffer Object (IVBO) for the terrain mesh");
     if(glIsVertexArray(_vao) != GL_TRUE)
         log::report(log_type::fatal_error, "unable to generate a Vertex Array Object (VAO) for the terrain mesh");
     
@@ -189,12 +150,13 @@ void World::render()
 
     _shader.setMat4("view", Matrixes::get_matrix(matrix::view));
     _shader.setMat4("proj", Matrixes::get_matrix(matrix::proj));
+    _shader.setMat4("model", Matrixes::get_matrix(matrix::model));
 
     _texture.bind_texture();
   
     glBindVertexArray(_vao);
     
-    glDrawElementsInstanced(GL_TRIANGLES, 36, GL_UNSIGNED_BYTE, 0, _instance_nb);
+    glDrawArrays(GL_TRIANGLES, 0, _vertex_count);
 
     glBindVertexArray(0);
 
@@ -207,6 +169,4 @@ World::~World()
 {
     glDeleteVertexArrays(1, &_vao);
     glDeleteBuffers(1, &_vbo);
-    glDeleteBuffers(1, &_instance_vbo);
-    glDeleteBuffers(1, &_ebo);
 }
