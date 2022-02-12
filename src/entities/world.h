@@ -15,14 +15,19 @@
 class World : public std::enable_shared_from_this<World>
 {
     inline static constexpr const int _world_size = 10;
+    inline static constexpr const int _map_size = 60;
     
     public:
         template <typename T>
-        using map_type = std::array<std::array<T, _world_size>, _world_size>;
+        using map_type = std::array<std::array<std::array<T, _map_size>, _map_size>, _map_size>;
+        template <typename T>
+        using height_map_type = std::array<std::array<T, _world_size>, _world_size>;
 
         static std::shared_ptr<World> create();
         inline std::shared_ptr<World> get_ptr() { return shared_from_this(); }
         float get_height(int x, int z) noexcept;
+        float get_block(int x, int y, int z) noexcept;
+        void set_block(int x, int y, int z, int type) noexcept;
 
         void render();
 
@@ -35,9 +40,10 @@ class World : public std::enable_shared_from_this<World>
         GLuint _vbo = 0;
         GLuint _ebo = 0;
         GLuint _vao = 0;
+        GLuint _instance_vbo = 0;
+        int _instance_nb = 0;
 
-        int _indices_nb = 0;
-
+        height_map_type<int> _height_map;
         map_type<int> _map;
         Shader _shader;
         Texture _texture;

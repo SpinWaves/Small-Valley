@@ -10,7 +10,7 @@
 
 int main(int argc, char** argv)
 {
-    srand(time(NULL)); // init random system
+    srand(time(NULL)); // init randomizer system
 
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 6);
@@ -23,7 +23,7 @@ int main(int argc, char** argv)
     Input in;
 
     Application app;
-    app.init("World");
+    app.init("Small Valley");
 
     while(!in.isEnded())
     {

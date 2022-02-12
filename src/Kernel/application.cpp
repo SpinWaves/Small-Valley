@@ -38,13 +38,16 @@ void Application::init(const char* name)
     _shader.create(MAIN_DIR"src/graphics/shaders/main_3D.vert", MAIN_DIR"src/graphics/shaders/main_3D.frag");
     _shader.bindShader();
 
-    _camera.setPosition(-2, -2, 2);
+    _camera.setPosition(5, 5, 5);
 
     glDepthMask(GL_TRUE);
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_TEXTURE_2D);
     glActiveTexture(GL_TEXTURE0);
-    glProvokingVertex(GL_FIRST_VERTEX_CONVENTION);
+
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_FRONT);
+    glFrontFace(GL_CW);  
 
     _world = World::create();
     _cube.create(0, 0, 0);
@@ -54,7 +57,7 @@ void Application::update(const Input& in)
 {
     SDL_GL_SetSwapInterval(1);
 
-    _camera.onEvent(in);
+    _camera.onEvent(in, *_world);
     _camera.look();
 
     Matrixes::matrix_mode(matrix::proj);

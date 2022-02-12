@@ -10,12 +10,12 @@ Input::Input()
 {
     for(int i = 0; i < SDL_NUM_SCANCODES; i++)
     {
-        _keys[0][i] = false;
-        _keys[1][i] = false;
+        _keys[i].first = false;
+        _keys[i].second = false;
         if(i < 8)
         {
-            _mouse[0][i] = false;
-            _mouse[1][i] = false;
+            _mouse[i].first = false;
+            _mouse[i].second = false;
         }
     }
 }
@@ -24,6 +24,13 @@ void Input::update()
 {
     _xRel = 0;
     _yRel = 0;
+
+    for(int i = 0; i < SDL_NUM_SCANCODES; i++)
+    {
+        _keys[i].second = false;
+        if(i < 8)
+            _mouse[i].second = false;
+    }
     
     while(SDL_PollEvent(&_event))
     {
@@ -33,23 +40,23 @@ void Input::update()
         switch(_event.type) 
         {
             case SDL_KEYDOWN: 
-                _keys[1][_event.key.keysym.scancode] = true;
-                _keys[0][_event.key.keysym.scancode] = false;
+                _keys[_event.key.keysym.scancode].first = true;
+                _keys[_event.key.keysym.scancode].second = false;
             break;
 
             case SDL_KEYUP: 
-                _keys[1][_event.key.keysym.scancode] = false;
-                _keys[0][_event.key.keysym.scancode] = true;
+                _keys[_event.key.keysym.scancode].first = false;
+                _keys[_event.key.keysym.scancode].second = true;
             break;
 
             case SDL_MOUSEBUTTONDOWN: 
-                _mouse[1][_event.button.button] = true;
-                _mouse[0][_event.button.button] = false;
+                _mouse[_event.button.button].first = true;
+                _mouse[_event.button.button].second = false;
             break;
 
             case SDL_MOUSEBUTTONUP: 
-                _mouse[1][_event.button.button] = false;
-                _mouse[0][_event.button.button] = true;
+                _mouse[_event.button.button].first = false;
+                _mouse[_event.button.button].second = true;
             break;
 
             default: break;

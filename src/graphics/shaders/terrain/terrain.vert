@@ -12,29 +12,28 @@ out vec4 out_color;
 layout (location = 0) in vec3 in_pos;
 layout (location = 2) in vec3 in_normal;
 layout (location = 3) in vec2 in_tex_coords;
+layout (location = 4) in mat4 in_instance_matrix;
 
 uniform mat4 view;
 uniform mat4 proj;
-uniform mat4 model;
 
 vec3 lightDirection = vec3(0.3, -1.0, 0.5);
 vec3 lightColour = vec3(1.0, 0.8, 0.8);
 vec2 lightBias = vec2(0.3, 0.8);
 
 //simple diffuse lighting
-vec3 calculateLighting()
+vec3 calculateLighting(vec4 pos)
 {
 	vec3 normal = in_normal.xyz * 2.0 - 1.0; //required just because of the format the normals were stored in (0 - 1)
-	float brightness = max(dot(-lightDirection, normal), 0.0);
+	float brightness = max(dot(-lightDirection /*/ (pos.xyz * 0.5)*/, normal), 0.0);
 	return (lightColour * lightBias.x) + (brightness * lightColour * lightBias.y);
 }
 
 void main(void)
 {
-    vec4 fragPos = vec4(model * vec4(in_pos, 1.0));
+    vec4 fragPos = vec4(in_instance_matrix * vec4(in_pos, 1.0));
 	
-	vec3 lighting = calculateLighting();
-    out_color = vec4(lighting * 5, 1.0);
+    out_color = vec4(calculateLighting(fragPos), 1.0);
 
 	out_tex_coords = in_tex_coords;
 

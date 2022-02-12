@@ -18,9 +18,9 @@ class Input
 
         void update();
 
-        inline bool getInKey(const SDL_Scancode key, action type = action::down) const noexcept { return type == action::down ? _keys[1][key] : _keys[0][key]; }
+        inline bool getInKey(const SDL_Scancode key, action type = action::down) const noexcept { return type == action::down ? _keys[key].first : _keys[key].second; }
 
-        inline bool getInMouse(const uint8_t button, action type = action::down) const noexcept { return type == action::down ? _mouse[1][button] : _mouse[0][button]; }
+        inline bool getInMouse(const uint8_t button, action type = action::down) const noexcept { return type == action::down ? _mouse[button].first : _mouse[button].second; }
         inline bool isMouseMoving() const noexcept { return _xRel || _yRel ? true : false; }
 
         inline int getX() const noexcept { return _x; }
@@ -36,8 +36,8 @@ class Input
 
     private:
         SDL_Event _event;
-        std::array<std::array<bool, 2>, SDL_NUM_SCANCODES> _keys;
-        std::array<std::array<bool, 2>, 8> _mouse;
+        std::array<std::pair<bool, bool>, SDL_NUM_SCANCODES> _keys;
+        std::array<std::pair<bool, bool>, 8> _mouse;
 
         int _x = 0;
         int _y = 0;
