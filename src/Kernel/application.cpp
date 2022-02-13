@@ -45,10 +45,6 @@ void Application::init(const char* name)
     glEnable(GL_TEXTURE_2D);
     glActiveTexture(GL_TEXTURE0);
 
-    glEnable(GL_CULL_FACE);
-    glCullFace(GL_FRONT);
-    glFrontFace(GL_CW);  
-
     _world = World::create();
     _cube.create(0, 0, 0);
 }

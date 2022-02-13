@@ -38,11 +38,18 @@ void Camera3D::onEvent(const Input& input, World& world)
 
 	if(input.getInKey(SDL_SCANCODE_F, action::up))
 		_free = _free ? false : true;
+	if(input.getInKey(SDL_SCANCODE_N, action::up))
+	{
+		_free = true;
+		_noclip = _noclip ? false : true;
+	}
 
 	_speed = _free ? 0.3f : 0.1f;
 
 	if(input.getInKey(SDL_SCANCODE_Q))
 		_speed = _free ? 0.5f : 0.15f;
+	if(input.getInKey(SDL_SCANCODE_LCTRL))
+		_speed = _free ? 0.075f : 0.02f;
 	if(input.getInKey(SDL_SCANCODE_W) || input.getInKey(SDL_SCANCODE_UP))
 		_mov -= _forward;
 	if(input.getInKey(SDL_SCANCODE_S) || input.getInKey(SDL_SCANCODE_DOWN))
@@ -66,49 +73,58 @@ void Camera3D::onEvent(const Input& input, World& world)
 
 void Camera3D::move(World& world)
 {
-	if(!_free)
+	if(!_noclip)
 	{
-		_gravity += 0.01;
-
-		int gStep = __abs((int)(_gravity * 100));
-		for(int i = 0; i < gStep; i++)
+		if(!_free)
 		{
-			if(!isColliding(0, 0, _mov.Z - (_gravity / gStep), world))
-				_position.Z -= _gravity / gStep;
-			else
+			_gravity += 0.01;
+
+			int gStep = __abs((int)(_gravity * 100));
+			for(int i = 0; i < gStep; i++)
+			{
+				if(!isColliding(0, 0, _mov.Z - (_gravity / gStep), world))
+					_position.Z -= _gravity / gStep;
+				else
+					_gravity = 0.0;
+			}
+
+			if(_position.Z < -60)
+			{
+				_position.SET(5, 5, 5);
 				_gravity = 0.0;
+			}
 		}
 
-		if(_position.Z < -60)
+		int xStep = __abs((int)(_mov.X * 100));
+		for(int i = 0; i < xStep; i++)
 		{
-			_position.SET(5, 5, 5);
-			_gravity = 0.0;
+			if(!isColliding(_mov.X / xStep, 0, 0, world))
+				_position.X += (_mov.X * _speed) / xStep;
+			else
+				_mov.X = 0;
+		}
+		int yStep = __abs((int)(_mov.Y * 100));
+		for(int i = 0; i < yStep; i++)
+		{
+			if(!isColliding(0, _mov.Y / yStep, 0, world))
+				_position.Y += (_mov.Y * _speed) / yStep;
+			else
+				_mov.Y = 0;
+		}
+		int zStep = __abs((int)(_mov.Z * 100));
+		for(int i = 0; i < zStep; i++)
+		{
+			if(!isColliding(0, 0, _mov.Z / zStep, world))
+				_position.Z += (_mov.Z * _speed) / zStep;
+			else
+				_mov.Z = 0;
 		}
 	}
-
-	int xStep = __abs((int)(_mov.X * 100));
-	for(int i = 0; i < xStep; i++)
+	else
 	{
-		if(!isColliding(_mov.X / xStep, 0, 0, world))
-			_position.X += (_mov.X * _speed) / xStep;
-		else
-			_mov.X = 0;
-	}
-	int yStep = __abs((int)(_mov.Y * 100));
-	for(int i = 0; i < yStep; i++)
-	{
-		if(!isColliding(0, _mov.Y / yStep, 0, world))
-			_position.Y += (_mov.Y * _speed) / yStep;
-		else
-			_mov.Y = 0;
-	}
-	int zStep = __abs((int)(_mov.Z * 100));
-	for(int i = 0; i < zStep; i++)
-	{
-		if(!isColliding(0, 0, _mov.Z / zStep, world))
-			_position.Z += (_mov.Z * _speed) / zStep;
-		else
-			_mov.Z = 0;
+		_position.X += _mov.X * _speed;
+		_position.Y += _mov.Y * _speed;
+		_position.Z += _mov.Z * _speed;
 	}
 }
 

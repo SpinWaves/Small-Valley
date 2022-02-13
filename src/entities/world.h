@@ -47,15 +47,6 @@ class World : public std::enable_shared_from_this<World>
         map_type<int> _map;
         Shader _shader;
         Texture _texture;
-
-        struct Vertex_Data
-        {
-            Vec3<float> pos;
-            Vec3<int> normals;
-            Vec2<int> texture_coords;
-        };
-        
-        std::vector<Vertex_Data> _cube_mesh;
 };
 
 #endif // __WORLD__

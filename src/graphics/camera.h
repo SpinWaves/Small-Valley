@@ -37,6 +37,7 @@ class Camera3D
 		double _gravity = 0.0;
 		bool _grounded = false;
 		bool _free = false;
+		bool _noclip = false;
 
 		bool _isMouseGrabed = false;
 

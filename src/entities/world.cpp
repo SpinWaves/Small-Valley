@@ -6,6 +6,7 @@
 
 #include "world.h"
 #include <graphics/matrixes.h>
+#include <graphics/cube_mesh.h>
 
 float World::get_height(int x, int z) noexcept
 {
@@ -66,53 +67,104 @@ std::shared_ptr<World> World::create()
 
 void World::load_meshes()
 {
-    _cube_mesh = {
-        // top
-        World::Vertex_Data(Vec3<float>(0.5f, 0.5f, 0.5f), Vec3<int>(0, 0, 1), Vec2<int>(0, 0)),
-        World::Vertex_Data(Vec3<float>(-0.5f, 0.5f, 0.5f), Vec3<int>(0, 0, 1), Vec2<int>(0, 1)),
-        World::Vertex_Data(Vec3<float>(-0.5f, -0.5f, 0.5f), Vec3<int>(0, 0, 1), Vec2<int>(1, 1)),
-        World::Vertex_Data(Vec3<float>(0.5f, -0.5f, 0.5f), Vec3<int>(0, 0, 1), Vec2<int>(1, 0)),
-        // back
-        World::Vertex_Data(Vec3<float>(0.5f, 0.5f, 0.5f), Vec3<int>(1, 0, 0), Vec2<int>(1, 0)),
-        World::Vertex_Data(Vec3<float>(0.5f, -0.5f, 0.5f), Vec3<int>(1, 0, 0), Vec2<int>(0, 1)),
-        World::Vertex_Data(Vec3<float>(0.5f, -0.5f, -0.5f), Vec3<int>(1, 0, 0), Vec2<int>(0, 1)),
-        World::Vertex_Data(Vec3<float>(0.5f, 0.5f, -0.5f), Vec3<int>(1, 0, 0), Vec2<int>(1, 1)),
-        // left
-        World::Vertex_Data(Vec3<float>(0.5f, 0.5f, 0.5f), Vec3<int>(0, 1, 0), Vec2<int>(0, 0)),
-        World::Vertex_Data(Vec3<float>(0.5f, 0.5f, -0.5f), Vec3<int>(0, 1, 0), Vec2<int>(0, 1)),
-        World::Vertex_Data(Vec3<float>(-0.5f, 0.5f, -0.5f), Vec3<int>(0, 1, 0), Vec2<int>(1, 1)),
-        World::Vertex_Data(Vec3<float>(-0.5f, 0.5f, 0.5f), Vec3<int>(0, 1, 0), Vec2<int>(1, 0)),
-        // front
-        World::Vertex_Data(Vec3<float>(-0.5f, 0.5f, 0.5f), Vec3<int>(-1, 0, 0), Vec2<int>(0, 0)),
-        World::Vertex_Data(Vec3<float>(-0.5f, 0.5f, -0.5f), Vec3<int>(-1, 0, 0), Vec2<int>(0, 1)),
-        World::Vertex_Data(Vec3<float>(-0.5f, -0.5f, -0.5f), Vec3<int>(-1, 0, 0), Vec2<int>(1, 1)),
-        World::Vertex_Data(Vec3<float>(-0.5f, -0.5f, 0.5f), Vec3<int>(-1, 0, 0), Vec2<int>(1, 0)),
-        // right
-        World::Vertex_Data(Vec3<float>(-0.5f, -0.5f, -0.5f), Vec3<int>(0, -1, 0), Vec2<int>(0, 1)),
-        World::Vertex_Data(Vec3<float>(0.5f, -0.5f, -0.5f), Vec3<int>(0, -1, 0), Vec2<int>(1, 1)),
-        World::Vertex_Data(Vec3<float>(0.5f, -0.5f, 0.5f), Vec3<int>(0, -1, 0), Vec2<int>(1, 0)),
-        World::Vertex_Data(Vec3<float>(-0.5f, -0.5f, 0.5f), Vec3<int>(0, -1, 0), Vec2<int>(0, 0)),
-        // bottom
-        World::Vertex_Data(Vec3<float>(0.5f, -0.5f, -0.5f), Vec3<int>(0, 0, -1), Vec2<int>(0, 0)),
-        World::Vertex_Data(Vec3<float>(-0.5f, -0.5f, -0.5f), Vec3<int>(0, 0, -1), Vec2<int>(0, 1)),
-        World::Vertex_Data(Vec3<float>(-0.5f, 0.5f, -0.5f), Vec3<int>(0, 0, -1), Vec2<int>(1, 1)),
-        World::Vertex_Data(Vec3<float>(0.5f, 0.5f, -0.5f), Vec3<int>(0, 0, -1), Vec2<int>(1, 0)),
-    };
+    std::vector<Vertex> mesh_data;
 
-    glm::mat4 translations[_world_size * _world_size * _world_size];
     for(int z = 1; z <= _world_size; z++)
     {
         for(int x = 1; x <= _world_size; x++)
         {
             for(int y = 0; y < _world_size; y++)
             {
-                glm::mat4 translation(1.0f);
-                translation = glm::translate(translation, glm::vec3((float)x, (float)z, -(y - get_height(x - 1, z - 1))));
-                translations[_instance_nb++] = std::move(translation);
                 set_block(x, z, -(y - get_height(x - 1, z - 1)), 1);
             }
         }
     }
+
+    for(int z = 1; z <= _world_size; z++)
+    {
+        for(int x = 1; x <= _world_size; x++)
+        {
+            for(int y = 0; y < _world_size; y++)
+            {
+                if(-(y - get_height(x - 1, z - 1)) >= 0)
+                {
+                    // top
+                    if(!get_block(x, z, -(y - get_height(x - 1, z - 1)) - 1))
+                    {
+                        mesh_data.push_back(Vertex(cube_mesh[0].position  + Vec3<float>(x, z, -(y - get_height(x - 1, z - 1))), cube_mesh[0].normals, cube_mesh[0].texture_coords));
+                        mesh_data.push_back(Vertex(cube_mesh[1].position  + Vec3<float>(x, z, -(y - get_height(x - 1, z - 1))), cube_mesh[1].normals, cube_mesh[1].texture_coords));
+                        mesh_data.push_back(Vertex(cube_mesh[2].position  + Vec3<float>(x, z, -(y - get_height(x - 1, z - 1))), cube_mesh[2].normals, cube_mesh[2].texture_coords));
+
+                        mesh_data.push_back(Vertex(cube_mesh[3].position  + Vec3<float>(x, z, -(y - get_height(x - 1, z - 1))), cube_mesh[3].normals, cube_mesh[3].texture_coords));
+                        mesh_data.push_back(Vertex(cube_mesh[4].position  + Vec3<float>(x, z, -(y - get_height(x - 1, z - 1))), cube_mesh[4].normals, cube_mesh[4].texture_coords));
+                        mesh_data.push_back(Vertex(cube_mesh[5].position  + Vec3<float>(x, z, -(y - get_height(x - 1, z - 1))), cube_mesh[5].normals, cube_mesh[5].texture_coords));
+                    }
+
+                    // bottom
+                    if(!get_block(x, z, -(y - get_height(x - 1, z - 1)) + 1))
+                    {
+                        mesh_data.push_back(Vertex(cube_mesh[6].position  + Vec3<float>(x, z, -(y - get_height(x - 1, z - 1))), cube_mesh[6].normals, cube_mesh[6].texture_coords));
+                        mesh_data.push_back(Vertex(cube_mesh[7].position  + Vec3<float>(x, z, -(y - get_height(x - 1, z - 1))), cube_mesh[7].normals, cube_mesh[7].texture_coords));
+                        mesh_data.push_back(Vertex(cube_mesh[8].position  + Vec3<float>(x, z, -(y - get_height(x - 1, z - 1))), cube_mesh[8].normals, cube_mesh[8].texture_coords));
+
+                        mesh_data.push_back(Vertex(cube_mesh[9].position  + Vec3<float>(x, z, -(y - get_height(x - 1, z - 1))), cube_mesh[9].normals, cube_mesh[9].texture_coords));
+                        mesh_data.push_back(Vertex(cube_mesh[10].position + Vec3<float>(x, z, -(y - get_height(x - 1, z - 1))), cube_mesh[10].normals, cube_mesh[10].texture_coords));
+                        mesh_data.push_back(Vertex(cube_mesh[11].position + Vec3<float>(x, z, -(y - get_height(x - 1, z - 1))), cube_mesh[11].normals, cube_mesh[11].texture_coords));
+                    }
+
+                    // front
+                    if(!get_block(x - 1, z, -(y - get_height(x - 1, z - 1))))
+                    {
+                        mesh_data.push_back(Vertex(cube_mesh[12].position + Vec3<float>(x, z, -(y - get_height(x - 1, z - 1))), cube_mesh[12].normals, cube_mesh[12].texture_coords));
+                        mesh_data.push_back(Vertex(cube_mesh[13].position + Vec3<float>(x, z, -(y - get_height(x - 1, z - 1))), cube_mesh[13].normals, cube_mesh[13].texture_coords));
+                        mesh_data.push_back(Vertex(cube_mesh[14].position + Vec3<float>(x, z, -(y - get_height(x - 1, z - 1))), cube_mesh[14].normals, cube_mesh[14].texture_coords));
+
+                        mesh_data.push_back(Vertex(cube_mesh[15].position + Vec3<float>(x, z, -(y - get_height(x - 1, z - 1))), cube_mesh[15].normals, cube_mesh[15].texture_coords));
+                        mesh_data.push_back(Vertex(cube_mesh[16].position + Vec3<float>(x, z, -(y - get_height(x - 1, z - 1))), cube_mesh[16].normals, cube_mesh[16].texture_coords));
+                        mesh_data.push_back(Vertex(cube_mesh[17].position + Vec3<float>(x, z, -(y - get_height(x - 1, z - 1))), cube_mesh[17].normals, cube_mesh[17].texture_coords));
+                    }
+
+                    // back
+                    if(!get_block(x + 1, z, -(y - get_height(x - 1, z - 1))))
+                    {
+                        mesh_data.push_back(Vertex(cube_mesh[18].position + Vec3<float>(x, z, -(y - get_height(x - 1, z - 1))), cube_mesh[18].normals, cube_mesh[18].texture_coords));
+                        mesh_data.push_back(Vertex(cube_mesh[19].position + Vec3<float>(x, z, -(y - get_height(x - 1, z - 1))), cube_mesh[19].normals, cube_mesh[19].texture_coords));
+                        mesh_data.push_back(Vertex(cube_mesh[20].position + Vec3<float>(x, z, -(y - get_height(x - 1, z - 1))), cube_mesh[20].normals, cube_mesh[20].texture_coords));
+
+                        mesh_data.push_back(Vertex(cube_mesh[21].position + Vec3<float>(x, z, -(y - get_height(x - 1, z - 1))), cube_mesh[21].normals, cube_mesh[21].texture_coords));
+                        mesh_data.push_back(Vertex(cube_mesh[22].position + Vec3<float>(x, z, -(y - get_height(x - 1, z - 1))), cube_mesh[22].normals, cube_mesh[22].texture_coords));
+                        mesh_data.push_back(Vertex(cube_mesh[23].position + Vec3<float>(x, z, -(y - get_height(x - 1, z - 1))), cube_mesh[23].normals, cube_mesh[23].texture_coords));
+                    }
+
+                    // right
+                    if(!get_block(x, z - 1, -(y - get_height(x - 1, z - 1))))
+                    {
+                        mesh_data.push_back(Vertex(cube_mesh[24].position + Vec3<float>(x, z, -(y - get_height(x - 1, z - 1))), cube_mesh[24].normals, cube_mesh[24].texture_coords));
+                        mesh_data.push_back(Vertex(cube_mesh[25].position + Vec3<float>(x, z, -(y - get_height(x - 1, z - 1))), cube_mesh[25].normals, cube_mesh[25].texture_coords));
+                        mesh_data.push_back(Vertex(cube_mesh[26].position + Vec3<float>(x, z, -(y - get_height(x - 1, z - 1))), cube_mesh[26].normals, cube_mesh[26].texture_coords));
+
+                        mesh_data.push_back(Vertex(cube_mesh[27].position + Vec3<float>(x, z, -(y - get_height(x - 1, z - 1))), cube_mesh[27].normals, cube_mesh[27].texture_coords));
+                        mesh_data.push_back(Vertex(cube_mesh[28].position + Vec3<float>(x, z, -(y - get_height(x - 1, z - 1))), cube_mesh[28].normals, cube_mesh[28].texture_coords));
+                        mesh_data.push_back(Vertex(cube_mesh[29].position + Vec3<float>(x, z, -(y - get_height(x - 1, z - 1))), cube_mesh[29].normals, cube_mesh[29].texture_coords));
+                    }
+
+                    // left
+                    if(!get_block(x, z + 1, -(y - get_height(x - 1, z - 1))))
+                    {
+                        mesh_data.push_back(Vertex(cube_mesh[30].position + Vec3<float>(x, z, -(y - get_height(x - 1, z - 1))), cube_mesh[30].normals, cube_mesh[30].texture_coords));
+                        mesh_data.push_back(Vertex(cube_mesh[31].position + Vec3<float>(x, z, -(y - get_height(x - 1, z - 1))), cube_mesh[31].normals, cube_mesh[31].texture_coords));
+                        mesh_data.push_back(Vertex(cube_mesh[32].position + Vec3<float>(x, z, -(y - get_height(x - 1, z - 1))), cube_mesh[32].normals, cube_mesh[32].texture_coords));
+
+                        mesh_data.push_back(Vertex(cube_mesh[33].position + Vec3<float>(x, z, -(y - get_height(x - 1, z - 1))), cube_mesh[33].normals, cube_mesh[33].texture_coords));
+                        mesh_data.push_back(Vertex(cube_mesh[34].position + Vec3<float>(x, z, -(y - get_height(x - 1, z - 1))), cube_mesh[34].normals, cube_mesh[34].texture_coords));
+                        mesh_data.push_back(Vertex(cube_mesh[35].position + Vec3<float>(x, z, -(y - get_height(x - 1, z - 1))), cube_mesh[35].normals, cube_mesh[35].texture_coords));
+                    }
+                }
+            }
+        }
+    }
+    _vertex_count = mesh_data.size();
+
     glGenVertexArrays(1, &_vao);
 	glBindVertexArray(_vao);
 
@@ -120,17 +172,13 @@ void World::load_meshes()
         glDeleteBuffers(1, &_vbo);
 
 	glGenBuffers(1, &_vbo);
-    
+
 	glBindBuffer(GL_ARRAY_BUFFER, _vbo);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices) + sizeof(normals) + sizeof(texture_coords), 0, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * mesh_data.size(), &mesh_data[0], GL_STATIC_DRAW);
 
-    glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
-    glBufferSubData(GL_ARRAY_BUFFER, sizeof(vertices), sizeof(normals), normals);
-    glBufferSubData(GL_ARRAY_BUFFER, sizeof(vertices) + sizeof(normals), sizeof(texture_coords), texture_coords);
-
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
-    glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, 0, (void*)sizeof(vertices));
-    glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, 0, (void*)(sizeof(vertices) + sizeof(normals)));
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), nullptr);
+    glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, normals));
+    glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, texture_coords));
 
 	glEnableVertexAttribArray(0); // vertices
 	glEnableVertexAttribArray(2); // normals

@@ -12,7 +12,7 @@ set_languages("c++17")
 set_objectdir("build-int/$(os)_$(arch)")
 set_targetdir("build/$(os)_$(arch)")
 
-target("World")
+target("Small_Valley")
 	set_kind("binary")
 	add_files("src/**.cpp")
 	add_includedirs("src")

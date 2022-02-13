@@ -28,6 +28,7 @@ Vec4<T>::Vec4(const Vec4<T> & v)
     X = v.X;
     Y = v.Y;
     Z = v.Z;
+    W = v.W;
 }
 template <class T>
 Vec4<T>::Vec4(const Vec4 & from, const Vec4<T> & to)
