@@ -38,23 +38,15 @@ std::shared_ptr<World> World::create()
 {
     std::shared_ptr<World> world(new World());
 
-    World::height_map_type<int> temp = {
-        std::array<int, 10>{8, 6, 5, 4, 2, 1, 2, 5, 9, 12},
-        std::array<int, 10>{8, 5, 4, 2, 1, 0, 1, 4, 8, 13},
-        std::array<int, 10>{7, 5, 3, 1, 0, 0, 0, 3, 7, 11},
-        std::array<int, 10>{4, 4, 2, 0, 2, 0, 0, 2, 4, 8},
-        std::array<int, 10>{3, 2, 1, 0, 1, 0, 1, 3, 5, 7},
-        std::array<int, 10>{4, 3, 1, 0, 0, 0, 0, 2, 2, 4},
-        std::array<int, 10>{5, 4, 3, 1, 1, 1, 1, 2, 5, 6},
-        std::array<int, 10>{8, 7, 6, 4, 3, 2, 2, 3, 5, 8},
-        std::array<int, 10>{12, 10, 8, 6, 4, 4, 3, 6, 7, 10},
-        std::array<int, 10>{16, 14, 10, 8, 5, 5, 7, 8, 10, 11}
-    };
+    log::report(log_type::message, "Creating world...");
 
-    world->_height_map.swap(temp);
+    HeightMap height_map;
+    height_map.load_map(RES_DIR"assets/hm_best.png", 0.5);
 
-    std::array<int, _map_size> first_dim; first_dim.fill(0);
-    std::array<std::array<int, _map_size>, _map_size> second_dim; second_dim.fill(first_dim);
+    world->_height_map = std::move(height_map.get_data());
+
+    std::array<int, _world_size + 1> first_dim; first_dim.fill(0);
+    std::array<std::array<int, _world_size + 1>, _world_size + 1> second_dim; second_dim.fill(first_dim);
     world->_map.fill(second_dim);
 
     world->_shader.create(MAIN_DIR"src/graphics/shaders/terrain/terrain.vert", MAIN_DIR"src/graphics/shaders/terrain/terrain.frag");
@@ -62,12 +54,14 @@ std::shared_ptr<World> World::create()
 
     world->load_meshes();
 
+    log::report(log_type::message, "World created");
+
     return std::move(world);
 }
 
 void World::load_meshes()
 {
-    std::vector<Vertex> mesh_data;
+    log::report(log_type::message, "Generating world collision data...");
 
     for(int z = 1; z <= _world_size; z++)
     {
@@ -79,6 +73,11 @@ void World::load_meshes()
             }
         }
     }
+
+    log::report(log_type::message, "World collision data generated");  
+
+    log::report(log_type::message, "Generating world mesh...");
+    std::vector<Vertex> mesh_data;
 
     for(int z = 1; z <= _world_size; z++)
     {
@@ -174,7 +173,7 @@ void World::load_meshes()
 	glGenBuffers(1, &_vbo);
 
 	glBindBuffer(GL_ARRAY_BUFFER, _vbo);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * mesh_data.size(), &mesh_data[0], GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * _vertex_count, &mesh_data[0], GL_STATIC_DRAW);
 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), nullptr);
     glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, normals));
@@ -190,9 +189,11 @@ void World::load_meshes()
         log::report(log_type::fatal_error, "unable to generate a Vertex Array Object (VAO) for the terrain mesh");
     
     glBindVertexArray(0);
+
+    log::report(log_type::message, "World mesh generated");
 }
 
-void World::render()
+void World::render(bool wireline)
 {
     _shader.bindShader();
 
@@ -202,6 +203,8 @@ void World::render()
 
     _texture.bind_texture();
   
+    glPolygonMode(GL_FRONT_AND_BACK, wireline ? GL_LINE : GL_FILL);
+
     glBindVertexArray(_vao);
     
     glDrawArrays(GL_TRIANGLES, 0, _vertex_count);

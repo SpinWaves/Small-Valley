@@ -36,12 +36,12 @@ void Camera3D::onEvent(const Input& input, World& world)
 	
 	_mov.SET(0.0, 0.0, 0.0);
 
-	if(input.getInKey(SDL_SCANCODE_F, action::up))
+	if(input.getInKey(SDL_SCANCODE_F, action::up) && !_noclip)
 		_free = _free ? false : true;
 	if(input.getInKey(SDL_SCANCODE_N, action::up))
 	{
-		_free = true;
 		_noclip = _noclip ? false : true;
+		_free = _noclip;
 	}
 
 	_speed = _free ? 0.3f : 0.1f;

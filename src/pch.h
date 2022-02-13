@@ -28,4 +28,6 @@
     #define M_PI 3.141592653589793
 #endif
 
+#define ARRAY_SIZE(array) sizeof(array) / sizeof(array[0])
+
 #endif // __PCH__

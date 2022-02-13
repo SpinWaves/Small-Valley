@@ -30,6 +30,8 @@ class Application
         SDL_Window* _win = nullptr;
         SDL_GLContext _context;
 
+        bool _wireline = false;
+
         Shader _shader;
         Camera3D _camera;
         std::shared_ptr<World> _world;

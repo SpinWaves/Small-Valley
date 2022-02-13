@@ -57,7 +57,7 @@ void Application::update(const Input& in)
     _camera.look();
 
     Matrixes::matrix_mode(matrix::proj);
-    Matrixes::perspective(90, (float)1280/720, 0.01, 100);
+    Matrixes::perspective(90, (float)1280/720, 0.01, 1000);
 
     Matrixes::matrix_mode(matrix::model);
     Matrixes::load_identity();
@@ -65,7 +65,10 @@ void Application::update(const Input& in)
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glClearColor(0.49f, 0.66f, 0.85f, 1.0f);
 
-    _world->render();
+    if(in.getInKey(SDL_SCANCODE_T, action::up))
+        _wireline = _wireline ? false : true;
+
+    _world->render(_wireline);
     
     SDL_GL_SwapWindow(_win);
 }

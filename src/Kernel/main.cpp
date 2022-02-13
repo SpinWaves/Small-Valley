@@ -22,8 +22,12 @@ int main(int argc, char** argv)
 
     Input in;
 
+    log::report(log_type::message, "Loading...");
+    
     Application app;
     app.init("Small Valley");
+
+    log::report(log_type::message, "Loading finished !");
 
     while(!in.isEnded())
     {

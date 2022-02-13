@@ -15,9 +15,9 @@ class Texture
         Texture() = default;
 
         void load_texture(const char* filename);
-        inline void bind_texture()   { glBindTexture(GL_TEXTURE_2D, _texture); }
-        inline void unbind_texture() { glBindTexture(GL_TEXTURE_2D, 0); }
-        inline void free_texture()   { glDeleteTextures(1, &_texture); _texture = 0; }
+        inline void bind_texture()   noexcept { glBindTexture(GL_TEXTURE_2D, _texture); }
+        inline void unbind_texture() noexcept { glBindTexture(GL_TEXTURE_2D, 0); }
+        inline void free_texture()   noexcept { glDeleteTextures(1, &_texture); _texture = 0; }
 
         ~Texture();
 

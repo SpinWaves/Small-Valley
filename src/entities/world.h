@@ -12,17 +12,16 @@
 #include <graphics/textures.h>
 #include <maths/vec3.h>
 #include <maths/vec2.h>
+#include <Kernel/height_map.h>
 
 class World : public std::enable_shared_from_this<World>
 {
-    inline static constexpr const int _world_size = 10;
-    inline static constexpr const int _map_size = 60;
+    inline static constexpr const int _world_size = 256;
     
     public:
         template <typename T>
-        using map_type = std::array<std::array<std::array<T, _map_size>, _map_size>, _map_size>;
-        template <typename T>
-        using height_map_type = std::array<std::array<T, _world_size>, _world_size>;
+        using map_type = std::array<std::array<std::array<T, _world_size + 1>, _world_size + 1>, _world_size + 1>;
+        using height_map_type = std::vector<std::vector<int>>;
 
         static std::shared_ptr<World> create();
         inline std::shared_ptr<World> get_ptr() { return shared_from_this(); }
@@ -30,7 +29,7 @@ class World : public std::enable_shared_from_this<World>
         float get_block(int x, int y, int z) noexcept;
         void set_block(int x, int y, int z, int type) noexcept;
 
-        void render();
+        void render(bool wireline);
 
         ~World();
 
@@ -43,7 +42,7 @@ class World : public std::enable_shared_from_this<World>
 
         GLsizei _vertex_count = 0;
 
-        height_map_type<int> _height_map;
+        height_map_type _height_map;
         map_type<int> _map;
         Shader _shader;
         Texture _texture;

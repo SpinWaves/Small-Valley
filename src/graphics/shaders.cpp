@@ -8,6 +8,8 @@
 
 void Shader::create(const char* vertexFile, const char* fragmentFile)
 {
+    log::report(log_type::message, "Loading shader...");
+
     program = glCreateProgram();
 
     if(!program)
@@ -18,6 +20,8 @@ void Shader::create(const char* vertexFile, const char* fragmentFile)
 
     glLinkProgram(program);
     glValidateProgram(program);
+
+    log::report(log_type::message, "Shader loaded");
 }
 
 void Shader::bindShader()
@@ -95,6 +99,7 @@ char* Shader::LoadSourceShader(const char* filename)
     long i;
     _filename = filename;
 
+    log::report(log_type::message, "Loading shader's code...");
 
     fp = fopen(filename, "r");
     if(fp == NULL)
@@ -122,7 +127,7 @@ char* Shader::LoadSourceShader(const char* filename)
     src[SIZE] = '\0';
 
     fclose(fp);
-    std::cout << filename << " : ";
+    log::report(log_type::message, "Shader's code loaded");
     return src;
 }
 
@@ -135,6 +140,11 @@ void Shader::createShader(const char* source, int type)
         log::report(log_type::error, "Unable to create a shader");
         return;
     }
+
+    if(type == 35633 && shader)
+        log::report(log_type::message, "Compiling vertex shader...");
+    if(type == 35632 && shader)
+        log::report(log_type::message, "Compiling fragment shader...");
 
     glShaderSource(shader, 1, &source, NULL);
     glCompileShader(shader);
@@ -172,10 +182,7 @@ void Shader::createShader(const char* source, int type)
         return;
     }
 
-    if(type == 35633 && shader)
-        std::cout << "vertex shader made" << std::endl;
-    if(type == 35632 && shader)
-        std::cout << "fragment shader made" << '\n' << std::endl;
+    log::report(log_type::message, "Shader compiled");
 
     glAttachShader(program, shader);
 }
