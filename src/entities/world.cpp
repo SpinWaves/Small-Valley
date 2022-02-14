@@ -40,10 +40,15 @@ std::shared_ptr<World> World::create()
 
     log::report(log_type::message, "Creating world...");
 
-    HeightMap height_map;
-    height_map.load_map(RES_DIR"assets/hm_best.png", 0.5);
-
-    world->_height_map = std::move(height_map.get_data());
+    world->_height_map = std::move(load_height_map(RES_DIR"assets/height_map_terrain.png", 0.5));
+    for(int i = 0; i < _world_size; i++)
+    {
+        for(int j = 0; j < _world_size; j++)
+        {
+            if(world->_max_height < world->get_height(i, j))
+                world->_max_height = world->get_height(i, j);
+        }
+    }
 
     std::array<int, _world_size + 1> first_dim; first_dim.fill(0);
     std::array<std::array<int, _world_size + 1>, _world_size + 1> second_dim; second_dim.fill(first_dim);
@@ -81,84 +86,90 @@ void World::load_meshes()
 
     for(int z = 1; z <= _world_size; z++)
     {
+        if(z == 1 || z == _world_size) // remove edges
+            continue;
+        
         for(int x = 1; x <= _world_size; x++)
         {
+            if(x == 1 || x == _world_size) // remove edges
+                continue;
+            
             for(int y = 0; y < _world_size; y++)
             {
-                if(-(y - get_height(x - 1, z - 1)) >= 0)
+                if(-(y - get_height(x - 1, z - 1)) <= 0 || -(y - get_height(x - 1, z - 1)) == _max_height) // remove edges
+                    continue;
+
+                // top
+                if(!get_block(x, z, -(y - get_height(x - 1, z - 1)) - 1))
                 {
-                    // top
-                    if(!get_block(x, z, -(y - get_height(x - 1, z - 1)) - 1))
-                    {
-                        mesh_data.push_back(Vertex(cube_mesh[0].position  + Vec3<float>(x, z, -(y - get_height(x - 1, z - 1))), cube_mesh[0].normals, cube_mesh[0].texture_coords));
-                        mesh_data.push_back(Vertex(cube_mesh[1].position  + Vec3<float>(x, z, -(y - get_height(x - 1, z - 1))), cube_mesh[1].normals, cube_mesh[1].texture_coords));
-                        mesh_data.push_back(Vertex(cube_mesh[2].position  + Vec3<float>(x, z, -(y - get_height(x - 1, z - 1))), cube_mesh[2].normals, cube_mesh[2].texture_coords));
+                    mesh_data.push_back(Vertex(cube_mesh[0].position  + Vec3<float>(x, z, -(y - get_height(x - 1, z - 1))), cube_mesh[0].normals, cube_mesh[0].texture_coords));
+                    mesh_data.push_back(Vertex(cube_mesh[1].position  + Vec3<float>(x, z, -(y - get_height(x - 1, z - 1))), cube_mesh[1].normals, cube_mesh[1].texture_coords));
+                    mesh_data.push_back(Vertex(cube_mesh[2].position  + Vec3<float>(x, z, -(y - get_height(x - 1, z - 1))), cube_mesh[2].normals, cube_mesh[2].texture_coords));
 
-                        mesh_data.push_back(Vertex(cube_mesh[3].position  + Vec3<float>(x, z, -(y - get_height(x - 1, z - 1))), cube_mesh[3].normals, cube_mesh[3].texture_coords));
-                        mesh_data.push_back(Vertex(cube_mesh[4].position  + Vec3<float>(x, z, -(y - get_height(x - 1, z - 1))), cube_mesh[4].normals, cube_mesh[4].texture_coords));
-                        mesh_data.push_back(Vertex(cube_mesh[5].position  + Vec3<float>(x, z, -(y - get_height(x - 1, z - 1))), cube_mesh[5].normals, cube_mesh[5].texture_coords));
-                    }
-
-                    // bottom
-                    if(!get_block(x, z, -(y - get_height(x - 1, z - 1)) + 1))
-                    {
-                        mesh_data.push_back(Vertex(cube_mesh[6].position  + Vec3<float>(x, z, -(y - get_height(x - 1, z - 1))), cube_mesh[6].normals, cube_mesh[6].texture_coords));
-                        mesh_data.push_back(Vertex(cube_mesh[7].position  + Vec3<float>(x, z, -(y - get_height(x - 1, z - 1))), cube_mesh[7].normals, cube_mesh[7].texture_coords));
-                        mesh_data.push_back(Vertex(cube_mesh[8].position  + Vec3<float>(x, z, -(y - get_height(x - 1, z - 1))), cube_mesh[8].normals, cube_mesh[8].texture_coords));
-
-                        mesh_data.push_back(Vertex(cube_mesh[9].position  + Vec3<float>(x, z, -(y - get_height(x - 1, z - 1))), cube_mesh[9].normals, cube_mesh[9].texture_coords));
-                        mesh_data.push_back(Vertex(cube_mesh[10].position + Vec3<float>(x, z, -(y - get_height(x - 1, z - 1))), cube_mesh[10].normals, cube_mesh[10].texture_coords));
-                        mesh_data.push_back(Vertex(cube_mesh[11].position + Vec3<float>(x, z, -(y - get_height(x - 1, z - 1))), cube_mesh[11].normals, cube_mesh[11].texture_coords));
-                    }
-
-                    // front
-                    if(!get_block(x - 1, z, -(y - get_height(x - 1, z - 1))))
-                    {
-                        mesh_data.push_back(Vertex(cube_mesh[12].position + Vec3<float>(x, z, -(y - get_height(x - 1, z - 1))), cube_mesh[12].normals, cube_mesh[12].texture_coords));
-                        mesh_data.push_back(Vertex(cube_mesh[13].position + Vec3<float>(x, z, -(y - get_height(x - 1, z - 1))), cube_mesh[13].normals, cube_mesh[13].texture_coords));
-                        mesh_data.push_back(Vertex(cube_mesh[14].position + Vec3<float>(x, z, -(y - get_height(x - 1, z - 1))), cube_mesh[14].normals, cube_mesh[14].texture_coords));
-
-                        mesh_data.push_back(Vertex(cube_mesh[15].position + Vec3<float>(x, z, -(y - get_height(x - 1, z - 1))), cube_mesh[15].normals, cube_mesh[15].texture_coords));
-                        mesh_data.push_back(Vertex(cube_mesh[16].position + Vec3<float>(x, z, -(y - get_height(x - 1, z - 1))), cube_mesh[16].normals, cube_mesh[16].texture_coords));
-                        mesh_data.push_back(Vertex(cube_mesh[17].position + Vec3<float>(x, z, -(y - get_height(x - 1, z - 1))), cube_mesh[17].normals, cube_mesh[17].texture_coords));
-                    }
-
-                    // back
-                    if(!get_block(x + 1, z, -(y - get_height(x - 1, z - 1))))
-                    {
-                        mesh_data.push_back(Vertex(cube_mesh[18].position + Vec3<float>(x, z, -(y - get_height(x - 1, z - 1))), cube_mesh[18].normals, cube_mesh[18].texture_coords));
-                        mesh_data.push_back(Vertex(cube_mesh[19].position + Vec3<float>(x, z, -(y - get_height(x - 1, z - 1))), cube_mesh[19].normals, cube_mesh[19].texture_coords));
-                        mesh_data.push_back(Vertex(cube_mesh[20].position + Vec3<float>(x, z, -(y - get_height(x - 1, z - 1))), cube_mesh[20].normals, cube_mesh[20].texture_coords));
-
-                        mesh_data.push_back(Vertex(cube_mesh[21].position + Vec3<float>(x, z, -(y - get_height(x - 1, z - 1))), cube_mesh[21].normals, cube_mesh[21].texture_coords));
-                        mesh_data.push_back(Vertex(cube_mesh[22].position + Vec3<float>(x, z, -(y - get_height(x - 1, z - 1))), cube_mesh[22].normals, cube_mesh[22].texture_coords));
-                        mesh_data.push_back(Vertex(cube_mesh[23].position + Vec3<float>(x, z, -(y - get_height(x - 1, z - 1))), cube_mesh[23].normals, cube_mesh[23].texture_coords));
-                    }
-
-                    // right
-                    if(!get_block(x, z - 1, -(y - get_height(x - 1, z - 1))))
-                    {
-                        mesh_data.push_back(Vertex(cube_mesh[24].position + Vec3<float>(x, z, -(y - get_height(x - 1, z - 1))), cube_mesh[24].normals, cube_mesh[24].texture_coords));
-                        mesh_data.push_back(Vertex(cube_mesh[25].position + Vec3<float>(x, z, -(y - get_height(x - 1, z - 1))), cube_mesh[25].normals, cube_mesh[25].texture_coords));
-                        mesh_data.push_back(Vertex(cube_mesh[26].position + Vec3<float>(x, z, -(y - get_height(x - 1, z - 1))), cube_mesh[26].normals, cube_mesh[26].texture_coords));
-
-                        mesh_data.push_back(Vertex(cube_mesh[27].position + Vec3<float>(x, z, -(y - get_height(x - 1, z - 1))), cube_mesh[27].normals, cube_mesh[27].texture_coords));
-                        mesh_data.push_back(Vertex(cube_mesh[28].position + Vec3<float>(x, z, -(y - get_height(x - 1, z - 1))), cube_mesh[28].normals, cube_mesh[28].texture_coords));
-                        mesh_data.push_back(Vertex(cube_mesh[29].position + Vec3<float>(x, z, -(y - get_height(x - 1, z - 1))), cube_mesh[29].normals, cube_mesh[29].texture_coords));
-                    }
-
-                    // left
-                    if(!get_block(x, z + 1, -(y - get_height(x - 1, z - 1))))
-                    {
-                        mesh_data.push_back(Vertex(cube_mesh[30].position + Vec3<float>(x, z, -(y - get_height(x - 1, z - 1))), cube_mesh[30].normals, cube_mesh[30].texture_coords));
-                        mesh_data.push_back(Vertex(cube_mesh[31].position + Vec3<float>(x, z, -(y - get_height(x - 1, z - 1))), cube_mesh[31].normals, cube_mesh[31].texture_coords));
-                        mesh_data.push_back(Vertex(cube_mesh[32].position + Vec3<float>(x, z, -(y - get_height(x - 1, z - 1))), cube_mesh[32].normals, cube_mesh[32].texture_coords));
-
-                        mesh_data.push_back(Vertex(cube_mesh[33].position + Vec3<float>(x, z, -(y - get_height(x - 1, z - 1))), cube_mesh[33].normals, cube_mesh[33].texture_coords));
-                        mesh_data.push_back(Vertex(cube_mesh[34].position + Vec3<float>(x, z, -(y - get_height(x - 1, z - 1))), cube_mesh[34].normals, cube_mesh[34].texture_coords));
-                        mesh_data.push_back(Vertex(cube_mesh[35].position + Vec3<float>(x, z, -(y - get_height(x - 1, z - 1))), cube_mesh[35].normals, cube_mesh[35].texture_coords));
-                    }
+                    mesh_data.push_back(Vertex(cube_mesh[3].position  + Vec3<float>(x, z, -(y - get_height(x - 1, z - 1))), cube_mesh[3].normals, cube_mesh[3].texture_coords));
+                    mesh_data.push_back(Vertex(cube_mesh[4].position  + Vec3<float>(x, z, -(y - get_height(x - 1, z - 1))), cube_mesh[4].normals, cube_mesh[4].texture_coords));
+                    mesh_data.push_back(Vertex(cube_mesh[5].position  + Vec3<float>(x, z, -(y - get_height(x - 1, z - 1))), cube_mesh[5].normals, cube_mesh[5].texture_coords));
                 }
+
+                // bottom
+                if(!get_block(x, z, -(y - get_height(x - 1, z - 1)) + 1))
+                {
+                    mesh_data.push_back(Vertex(cube_mesh[6].position  + Vec3<float>(x, z, -(y - get_height(x - 1, z - 1))), cube_mesh[6].normals, cube_mesh[6].texture_coords));
+                    mesh_data.push_back(Vertex(cube_mesh[7].position  + Vec3<float>(x, z, -(y - get_height(x - 1, z - 1))), cube_mesh[7].normals, cube_mesh[7].texture_coords));
+                    mesh_data.push_back(Vertex(cube_mesh[8].position  + Vec3<float>(x, z, -(y - get_height(x - 1, z - 1))), cube_mesh[8].normals, cube_mesh[8].texture_coords));
+
+                    mesh_data.push_back(Vertex(cube_mesh[9].position  + Vec3<float>(x, z, -(y - get_height(x - 1, z - 1))), cube_mesh[9].normals, cube_mesh[9].texture_coords));
+                    mesh_data.push_back(Vertex(cube_mesh[10].position + Vec3<float>(x, z, -(y - get_height(x - 1, z - 1))), cube_mesh[10].normals, cube_mesh[10].texture_coords));
+                    mesh_data.push_back(Vertex(cube_mesh[11].position + Vec3<float>(x, z, -(y - get_height(x - 1, z - 1))), cube_mesh[11].normals, cube_mesh[11].texture_coords));
+                }
+
+                // front
+                if(!get_block(x - 1, z, -(y - get_height(x - 1, z - 1))))
+                {
+                    mesh_data.push_back(Vertex(cube_mesh[12].position + Vec3<float>(x, z, -(y - get_height(x - 1, z - 1))), cube_mesh[12].normals, cube_mesh[12].texture_coords));
+                    mesh_data.push_back(Vertex(cube_mesh[13].position + Vec3<float>(x, z, -(y - get_height(x - 1, z - 1))), cube_mesh[13].normals, cube_mesh[13].texture_coords));
+                    mesh_data.push_back(Vertex(cube_mesh[14].position + Vec3<float>(x, z, -(y - get_height(x - 1, z - 1))), cube_mesh[14].normals, cube_mesh[14].texture_coords));
+
+                    mesh_data.push_back(Vertex(cube_mesh[15].position + Vec3<float>(x, z, -(y - get_height(x - 1, z - 1))), cube_mesh[15].normals, cube_mesh[15].texture_coords));
+                    mesh_data.push_back(Vertex(cube_mesh[16].position + Vec3<float>(x, z, -(y - get_height(x - 1, z - 1))), cube_mesh[16].normals, cube_mesh[16].texture_coords));
+                    mesh_data.push_back(Vertex(cube_mesh[17].position + Vec3<float>(x, z, -(y - get_height(x - 1, z - 1))), cube_mesh[17].normals, cube_mesh[17].texture_coords));
+                }
+
+                // back
+                if(!get_block(x + 1, z, -(y - get_height(x - 1, z - 1))))
+                {
+                    mesh_data.push_back(Vertex(cube_mesh[18].position + Vec3<float>(x, z, -(y - get_height(x - 1, z - 1))), cube_mesh[18].normals, cube_mesh[18].texture_coords));
+                    mesh_data.push_back(Vertex(cube_mesh[19].position + Vec3<float>(x, z, -(y - get_height(x - 1, z - 1))), cube_mesh[19].normals, cube_mesh[19].texture_coords));
+                    mesh_data.push_back(Vertex(cube_mesh[20].position + Vec3<float>(x, z, -(y - get_height(x - 1, z - 1))), cube_mesh[20].normals, cube_mesh[20].texture_coords));
+
+                    mesh_data.push_back(Vertex(cube_mesh[21].position + Vec3<float>(x, z, -(y - get_height(x - 1, z - 1))), cube_mesh[21].normals, cube_mesh[21].texture_coords));
+                    mesh_data.push_back(Vertex(cube_mesh[22].position + Vec3<float>(x, z, -(y - get_height(x - 1, z - 1))), cube_mesh[22].normals, cube_mesh[22].texture_coords));
+                    mesh_data.push_back(Vertex(cube_mesh[23].position + Vec3<float>(x, z, -(y - get_height(x - 1, z - 1))), cube_mesh[23].normals, cube_mesh[23].texture_coords));
+                }
+
+                // right
+                if(!get_block(x, z - 1, -(y - get_height(x - 1, z - 1))))
+                {
+                    mesh_data.push_back(Vertex(cube_mesh[24].position + Vec3<float>(x, z, -(y - get_height(x - 1, z - 1))), cube_mesh[24].normals, cube_mesh[24].texture_coords));
+                    mesh_data.push_back(Vertex(cube_mesh[25].position + Vec3<float>(x, z, -(y - get_height(x - 1, z - 1))), cube_mesh[25].normals, cube_mesh[25].texture_coords));
+                    mesh_data.push_back(Vertex(cube_mesh[26].position + Vec3<float>(x, z, -(y - get_height(x - 1, z - 1))), cube_mesh[26].normals, cube_mesh[26].texture_coords));
+
+                    mesh_data.push_back(Vertex(cube_mesh[27].position + Vec3<float>(x, z, -(y - get_height(x - 1, z - 1))), cube_mesh[27].normals, cube_mesh[27].texture_coords));
+                    mesh_data.push_back(Vertex(cube_mesh[28].position + Vec3<float>(x, z, -(y - get_height(x - 1, z - 1))), cube_mesh[28].normals, cube_mesh[28].texture_coords));
+                    mesh_data.push_back(Vertex(cube_mesh[29].position + Vec3<float>(x, z, -(y - get_height(x - 1, z - 1))), cube_mesh[29].normals, cube_mesh[29].texture_coords));
+                }
+
+                // left
+                if(!get_block(x, z + 1, -(y - get_height(x - 1, z - 1))))
+                {
+                    mesh_data.push_back(Vertex(cube_mesh[30].position + Vec3<float>(x, z, -(y - get_height(x - 1, z - 1))), cube_mesh[30].normals, cube_mesh[30].texture_coords));
+                    mesh_data.push_back(Vertex(cube_mesh[31].position + Vec3<float>(x, z, -(y - get_height(x - 1, z - 1))), cube_mesh[31].normals, cube_mesh[31].texture_coords));
+                    mesh_data.push_back(Vertex(cube_mesh[32].position + Vec3<float>(x, z, -(y - get_height(x - 1, z - 1))), cube_mesh[32].normals, cube_mesh[32].texture_coords));
+
+                    mesh_data.push_back(Vertex(cube_mesh[33].position + Vec3<float>(x, z, -(y - get_height(x - 1, z - 1))), cube_mesh[33].normals, cube_mesh[33].texture_coords));
+                    mesh_data.push_back(Vertex(cube_mesh[34].position + Vec3<float>(x, z, -(y - get_height(x - 1, z - 1))), cube_mesh[34].normals, cube_mesh[34].texture_coords));
+                    mesh_data.push_back(Vertex(cube_mesh[35].position + Vec3<float>(x, z, -(y - get_height(x - 1, z - 1))), cube_mesh[35].normals, cube_mesh[35].texture_coords));
+                    }
             }
         }
     }

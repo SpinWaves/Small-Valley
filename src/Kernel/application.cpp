@@ -38,7 +38,7 @@ void Application::init(const char* name)
     _shader.create(MAIN_DIR"src/graphics/shaders/main_3D.vert", MAIN_DIR"src/graphics/shaders/main_3D.frag");
     _shader.bindShader();
 
-    _camera.setPosition(5, 5, 5);
+    _camera.setPosition(130, 150, 10);
 
     glDepthMask(GL_TRUE);
     glEnable(GL_DEPTH_TEST);

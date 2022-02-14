@@ -37,19 +37,23 @@ void Camera3D::onEvent(const Input& input, World& world)
 	_mov.SET(0.0, 0.0, 0.0);
 
 	if(input.getInKey(SDL_SCANCODE_F, action::up) && !_noclip)
+	{
 		_free = _free ? false : true;
+		_gravity = 0.0;
+	}
 	if(input.getInKey(SDL_SCANCODE_N, action::up))
 	{
 		_noclip = _noclip ? false : true;
 		_free = _noclip;
+		_gravity = 0.0;
 	}
 
-	_speed = _free ? 0.3f : 0.1f;
+	_max_speed = _free ? 0.3f : 0.1f;
 
 	if(input.getInKey(SDL_SCANCODE_Q))
-		_speed = _free ? 0.5f : 0.15f;
+		_max_speed = _free ? 0.5f : 0.15f;
 	if(input.getInKey(SDL_SCANCODE_LCTRL))
-		_speed = _free ? 0.075f : 0.02f;
+		_max_speed = _free ? 0.075f : 0.02f;
 	if(input.getInKey(SDL_SCANCODE_W) || input.getInKey(SDL_SCANCODE_UP))
 		_mov -= _forward;
 	if(input.getInKey(SDL_SCANCODE_S) || input.getInKey(SDL_SCANCODE_DOWN))
@@ -68,11 +72,17 @@ void Camera3D::onEvent(const Input& input, World& world)
 			_mov += _up;
 	}
 
+	if(_mov.X == 0 && _mov.Y == 0 && _mov.Z == 0)
+		_speed = 0.0f;
+
 	move(world);
 }
 
 void Camera3D::move(World& world)
 {
+	if(_speed <= _max_speed)
+		_speed += 0.01f;
+
 	if(!_noclip)
 	{
 		if(!_free)
@@ -90,7 +100,7 @@ void Camera3D::move(World& world)
 
 			if(_position.Z < -60)
 			{
-				_position.SET(5, 5, 5);
+				_position.SET(130, 130, 10);
 				_gravity = 0.0;
 			}
 		}
@@ -140,10 +150,7 @@ bool Camera3D::isColliding(double x, double y, double z, World& world)
 	int z1 = (int)(_position.Z + z + 0.8f);
 
 	int zGrounded = (int)(_position.Z + z - 1.4f - 0.1f);
-	if(world.get_block(x0, y0, zGrounded) || world.get_block(x1, y0, zGrounded) || world.get_block(x1, y1, zGrounded) || world.get_block(x0, y1, zGrounded))
-		_grounded = true;
-	else
-		_grounded = false;
+	_grounded = world.get_block(x0, y0, zGrounded) || world.get_block(x1, y0, zGrounded) || world.get_block(x1, y1, zGrounded) || world.get_block(x0, y1, zGrounded) ? true : false;
 
 	if(world.get_block(x0, y0, z0)) return true;
 	if(world.get_block(x1, y0, z0)) return true;

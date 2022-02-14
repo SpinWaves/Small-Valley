@@ -26,6 +26,7 @@ class World : public std::enable_shared_from_this<World>
         static std::shared_ptr<World> create();
         inline std::shared_ptr<World> get_ptr() { return shared_from_this(); }
         float get_height(int x, int z) noexcept;
+        inline float get_max_height() noexcept { return _max_height; }
         float get_block(int x, int y, int z) noexcept;
         void set_block(int x, int y, int z, int type) noexcept;
 
@@ -41,6 +42,7 @@ class World : public std::enable_shared_from_this<World>
         GLuint _vao = 0;
 
         GLsizei _vertex_count = 0;
+        float _max_height = 0;
 
         height_map_type _height_map;
         map_type<int> _map;

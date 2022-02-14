@@ -19,13 +19,13 @@ class Camera3D
 
 		void onEvent(const Input& input, World& world);
 		void look();
-
 		inline void setPosition(int pos_x, int pos_y, int pos_z) noexcept { _position.SET(pos_x, pos_y, pos_z); }
 
 		~Camera3D() = default;
 
 	private:
-		float _speed = 0.15f;
+		float _speed = 0.0f;
+		float _max_speed = 0.15f;
 		const float _sensivity = 1.2f;
 
 		void move(World& world);

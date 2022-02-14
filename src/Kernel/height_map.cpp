@@ -1,3 +1,9 @@
+// Copyright (C) 2022 SpinWaves (https://github.com/SpinWaves)
+// This file is a part of "Small Valley"
+// For conditions of distribution and use, see the LICENSE
+//
+// Author : kbz_8 (https://solo.to/kbz_8)
+
 #include "height_map.h"
 
 uint32_t get_pixel(SDL_Surface* surface, int x, int y)
@@ -21,7 +27,7 @@ uint32_t get_pixel(SDL_Surface* surface, int x, int y)
     }
 }
 
-void HeightMap::load_map(const char* path, float ratio)
+std::vector<std::vector<int>> load_height_map(const char* path, float ratio)
 {
     SDL_Surface* image = IMG_Load(path);
 
@@ -35,6 +41,7 @@ void HeightMap::load_map(const char* path, float ratio)
     SDL_LockSurface(image);
     
     std::vector<int> temp;
+    std::vector<std::vector<int>> result;
 
     log::report(log_type::message, "Loading height map...");
     int value = 0;
@@ -50,7 +57,7 @@ void HeightMap::load_map(const char* path, float ratio)
                 value = r;
             temp.push_back((int)(value * ratio));
         }
-        _map.push_back(temp);
+        result.push_back(temp);
         temp.clear();
     }
 
@@ -59,4 +66,6 @@ void HeightMap::load_map(const char* path, float ratio)
     SDL_UnlockSurface(image);
 
     SDL_FreeSurface(image);
+
+    return std::move(result);
 }
