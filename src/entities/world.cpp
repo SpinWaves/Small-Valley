@@ -56,6 +56,7 @@ std::shared_ptr<World> World::create()
 
     world->_shader.create(MAIN_DIR"src/graphics/shaders/terrain/terrain.vert", MAIN_DIR"src/graphics/shaders/terrain/terrain.frag");
     world->_texture.load_texture(RES_DIR"assets/grass.jpg");
+    world->_normal_map.load_texture(RES_DIR"assets/grass_normal_map.jpg");
 
     world->load_meshes();
 
@@ -169,7 +170,7 @@ void World::load_meshes()
                     mesh_data.push_back(Vertex(cube_mesh[33].position + Vec3<float>(x, z, -(y - get_height(x - 1, z - 1))), cube_mesh[33].normals, cube_mesh[33].texture_coords));
                     mesh_data.push_back(Vertex(cube_mesh[34].position + Vec3<float>(x, z, -(y - get_height(x - 1, z - 1))), cube_mesh[34].normals, cube_mesh[34].texture_coords));
                     mesh_data.push_back(Vertex(cube_mesh[35].position + Vec3<float>(x, z, -(y - get_height(x - 1, z - 1))), cube_mesh[35].normals, cube_mesh[35].texture_coords));
-                    }
+                }
             }
         }
     }
@@ -181,17 +182,17 @@ void World::load_meshes()
     if(glIsBuffer(_vbo) == GL_TRUE)
         glDeleteBuffers(1, &_vbo);
 
-	glGenBuffers(1, &_vbo);
+    glGenBuffers(1, &_vbo);
 
-	glBindBuffer(GL_ARRAY_BUFFER, _vbo);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * _vertex_count, &mesh_data[0], GL_STATIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, _vbo);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * _vertex_count, &mesh_data[0], GL_STATIC_DRAW);
 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), nullptr);
     glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, normals));
     glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, texture_coords));
 
-	glEnableVertexAttribArray(0); // vertices
-	glEnableVertexAttribArray(2); // normals
+    glEnableVertexAttribArray(0); // vertices
+    glEnableVertexAttribArray(2); // normals
     glEnableVertexAttribArray(3); // texture coords
 
     if(glIsBuffer(_vbo) != GL_TRUE)
@@ -204,15 +205,19 @@ void World::load_meshes()
     log::report(log_type::message, "World mesh generated");
 }
 
-void World::render(bool wireline)
+void World::render(bool wireline, const Vec3<double>& cam_pos)
 {
     _shader.bindShader();
 
     _shader.setMat4("view", Matrixes::get_matrix(matrix::view));
     _shader.setMat4("proj", Matrixes::get_matrix(matrix::proj));
     _shader.setMat4("model", Matrixes::get_matrix(matrix::model));
+    _shader.setVec3("viewPos", cam_pos.X, cam_pos.Y, cam_pos.Z);
 
+    glActiveTexture(GL_TEXTURE0);
     _texture.bind_texture();
+    glActiveTexture(GL_TEXTURE1);
+    _normal_map.bind_texture();
   
     glPolygonMode(GL_FRONT_AND_BACK, wireline ? GL_LINE : GL_FILL);
 
@@ -223,6 +228,7 @@ void World::render(bool wireline)
     glBindVertexArray(0);
 
     _texture.unbind_texture();
+    _normal_map.unbind_texture();
 
     _shader.unbindShader();
 }

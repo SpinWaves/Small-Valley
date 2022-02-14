@@ -30,7 +30,7 @@ class World : public std::enable_shared_from_this<World>
         float get_block(int x, int y, int z) noexcept;
         void set_block(int x, int y, int z, int type) noexcept;
 
-        void render(bool wireline);
+        void render(bool wireline, const Vec3<double>& cam_pos);
 
         ~World();
 
@@ -48,6 +48,7 @@ class World : public std::enable_shared_from_this<World>
         map_type<int> _map;
         Shader _shader;
         Texture _texture;
+        Texture _normal_map;
 };
 
 #endif // __WORLD__

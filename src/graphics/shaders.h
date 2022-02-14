@@ -28,9 +28,9 @@ class Shader
         void setVec3(const std::string& name, Vec3<float> v);
         void setVec2(const std::string& name, Vec2<float> v);
         void setVec4(const std::string& name, Vec4<float> v);
-        void setVec3(const std::string& name, int x, int y, int z);
-        void setVec2(const std::string& name, int x, int y);
-        void setVec4(const std::string& name, int x, int y, int z, int t);
+        void setVec3(const std::string& name, float x, float y, float z);
+        void setVec2(const std::string& name, float x, float y);
+        void setVec4(const std::string& name, float x, float y, float z, float t);
         void setMat4(const std::string& name, glm::mat4 matrix);
 
         ~Shader();

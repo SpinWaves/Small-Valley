@@ -20,6 +20,7 @@ class Camera3D
 		void onEvent(const Input& input, World& world);
 		void look();
 		inline void setPosition(int pos_x, int pos_y, int pos_z) noexcept { _position.SET(pos_x, pos_y, pos_z); }
+		inline Vec3<double> getPosition() noexcept { return _position; }
 
 		~Camera3D() = default;
 

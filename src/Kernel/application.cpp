@@ -68,7 +68,7 @@ void Application::update(const Input& in)
     if(in.getInKey(SDL_SCANCODE_T, action::up))
         _wireline = _wireline ? false : true;
 
-    _world->render(_wireline);
+    _world->render(_wireline, _camera.getPosition());
     
     SDL_GL_SwapWindow(_win);
 }
