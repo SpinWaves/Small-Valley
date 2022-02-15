@@ -13,6 +13,7 @@ uniform sampler2D normal_map;
 uniform vec3 viewPos;
 
 in vec2 out_tex_coords;
+in vec3 normal;
 in vec3 pos;
 
 vec3 lightColor = vec3(1.0, 0.8, 0.8);
@@ -20,9 +21,11 @@ vec3 lightDir = normalize(vec3(-0.2, -1.0, -0.3));
 
 vec3 calculateLighting()
 {
+    /*
     vec3 norm = texture(normal_map, out_tex_coords).rgb;
     norm = normalize(norm * 2.0 - 1.0);
-
+    */
+    vec3 norm = normalize(normal);
 	// ambient
 	vec3 ambient = 0.3 * lightColor;
     // diffuse

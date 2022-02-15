@@ -9,6 +9,7 @@
 out vec2 out_tex_coords;
 out vec3 tangent_light_pos;
 out vec3 pos;
+out vec3 normal;
 /*
 out vec3 tangent_view_pos;
 out vec3 tangent_frag_pos;
@@ -27,6 +28,7 @@ void main(void)
 	
 	out_tex_coords = in_tex_coords;
 	pos = in_pos;
+    normal = in_normal;
 /*
 	mat3 normal_matrix = transpose(inverse(mat3(model)));
     vec3 T = normalize(normalMatrix * aTangent);

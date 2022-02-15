@@ -56,7 +56,7 @@ std::shared_ptr<World> World::create()
 
     world->_shader.create(MAIN_DIR"src/graphics/shaders/terrain/terrain.vert", MAIN_DIR"src/graphics/shaders/terrain/terrain.frag");
     world->_texture.load_texture(RES_DIR"assets/grass.jpg");
-    world->_normal_map.load_texture(RES_DIR"assets/grass_normal_map.jpg");
+    world->_normal_map.load_texture(RES_DIR"assets/grass_normal_map.jpg", texture_type::normal);
 
     world->load_meshes();
 

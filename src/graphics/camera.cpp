@@ -50,6 +50,9 @@ void Camera3D::onEvent(const Input& input, World& world)
 
 	_max_speed = _free ? 0.3f : 0.1f;
 
+	if(_grounded)
+		_gravity = 0.0f;
+
 	if(input.getInKey(SDL_SCANCODE_Q))
 		_max_speed = _free ? 0.5f : 0.15f;
 	if(input.getInKey(SDL_SCANCODE_LCTRL))
@@ -66,8 +69,8 @@ void Camera3D::onEvent(const Input& input, World& world)
 		_mov -= _up;
 	if(input.getInKey(SDL_SCANCODE_SPACE))
 	{
-		if(!_free && _grounded)	
-			_gravity -= 0.08;
+		if(!_free && _grounded)
+			_gravity -= 0.15;
 		else if(_free)
 			_mov += _up;
 	}
@@ -82,6 +85,8 @@ void Camera3D::move(World& world)
 {
 	if(_speed <= _max_speed)
 		_speed += 0.01f;
+	else
+		_speed = _max_speed;
 
 	if(!_noclip)
 	{

@@ -6,7 +6,7 @@
 
 #include "textures.h"
 
-void Texture::load_texture(const char* filename)
+void Texture::load_texture(const char* filename, texture_type type)
 {
     glEnable(GL_TEXTURE_2D);
 
@@ -29,6 +29,8 @@ void Texture::load_texture(const char* filename)
 
     if(!_texture)
         log::report(log_type::error, "unable to generate a texture");
+    
+    _type = type;
 }
 
 Texture::~Texture()
