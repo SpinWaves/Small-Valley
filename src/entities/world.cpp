@@ -65,10 +65,9 @@ std::shared_ptr<World> World::create()
     return std::move(world);
 }
 
-void World::load_meshes()
+void World::load_collisions()
 {
     log::report(log_type::message, "Generating world collision data...");
-
     for(int z = 1; z <= _world_size; z++)
     {
         for(int x = 1; x <= _world_size; x++)
@@ -79,12 +78,12 @@ void World::load_meshes()
             }
         }
     }
-
     log::report(log_type::message, "World collision data generated");  
+}
 
+void World::gen_mesh(std::vector<Vertex>& mesh_data)
+{
     log::report(log_type::message, "Generating world mesh...");
-    std::vector<Vertex> mesh_data;
-
     for(int z = 1; z <= _world_size; z++)
     {
         if(z == 1 || z == _world_size) // remove edges
@@ -175,6 +174,17 @@ void World::load_meshes()
         }
     }
     _vertex_count = mesh_data.size();
+    log::report(log_type::message, "World mesh generated");
+}
+
+void World::load_meshes()
+{
+    std::vector<Vertex> mesh_data;
+
+    std::thread collisions_thread(&World::load_collisions, this);
+    std::thread mesh_thread(&World::gen_mesh, this, std::ref(mesh_data));
+
+    mesh_thread.join();
 
     glGenVertexArrays(1, &_vao);
 	glBindVertexArray(_vao);
@@ -202,7 +212,7 @@ void World::load_meshes()
     
     glBindVertexArray(0);
 
-    log::report(log_type::message, "World mesh generated");
+    collisions_thread.join();
 }
 
 void World::render(bool wireline, const Vec3<double>& cam_pos)

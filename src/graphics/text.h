@@ -6,7 +6,7 @@
 
 #ifndef __TEXT__
 #define __TEXT__
-/*
+
 #include <pch.h>
 
 enum class color_text { white, black };
@@ -25,7 +25,6 @@ class Text
 
         ~Text();
 
-
     private:
         void add_line(const char* text);
 
@@ -38,8 +37,6 @@ class Text
         GLuint _vao = 0;
 
         int _vertex_count = 0;
-
-        SDL_Surface* _lines;
 };
-*/
+
 #endif // __TEXT__

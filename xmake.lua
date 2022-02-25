@@ -28,5 +28,7 @@ target("Small_Valley")
 	add_defines("SDL_MAIN_HANDLED")
     set_pcxxheader("src/pch.h")
 
+	add_links("pthread")
+
 	add_packages("libsdl_image", "libsdl", "libsdl_ttf", "glew", "glm")
 target_end() -- optional but I think the code is cleaner with this

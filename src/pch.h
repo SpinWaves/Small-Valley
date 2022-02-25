@@ -20,8 +20,10 @@
 
 #include <map>
 #include <array>
+#include <thread>
 #include <vector>
 #include <memory>
+#include <functional>
 #include <unordered_map>
 #include <initializer_list>
 

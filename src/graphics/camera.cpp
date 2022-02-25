@@ -83,10 +83,7 @@ void Camera3D::onEvent(const Input& input, World& world)
 
 void Camera3D::move(World& world)
 {
-	if(_speed <= _max_speed)
-		_speed += 0.01f;
-	else
-		_speed = _max_speed;
+	_speed = _speed <= _max_speed ? _speed + 0.01f : _max_speed;
 
 	if(!_noclip)
 	{

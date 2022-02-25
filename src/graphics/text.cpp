@@ -5,7 +5,7 @@
 // Author : kbz_8 (https://solo.to/kbz_8)
 
 #include "text.h"
-/*
+
 Text::Text(TTF_Font* font, color_text color)
 {
     if(!TTF_WasInit() && TTF_Init() == -1)
@@ -183,6 +183,8 @@ void Text::add_line(const char* text)
 
     GLuint texture;
 
+    /* Use texture array */
+
     glGenTextures(1, &texture);
     glBindTexture(GL_TEXTURE_2D, texture);
 
@@ -216,18 +218,15 @@ void Text::free_texture()
 
 void Text::render(int x, int y, align alignment)
 {
-    for(int i = 0; i < _lines.size(); i++)
-    {
-        glBindTexture(GL_TEXTURE_2D, _lines[i]);
+    glBindTexture(GL_TEXTURE_2D, _lines[i]);
 
-        glBindVertexArray(_vao);
+    glBindVertexArray(_vao);
+
+    glDrawArrays(GL_TRIANGLES, 0, _vertex_count);
     
-        glDrawArrays(GL_TRIANGLES, 0, _vertex_count);
-        
-        glBindVertexArray(0);
+    glBindVertexArray(0);
 
-        glBindTexture(GL_TEXTURE_2D, 0);
-    }
+    glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 Text::~Text()
@@ -242,4 +241,3 @@ Text::~Text()
         TTF_CloseFont(_font);
     _font = nullptr;
 }
-*/

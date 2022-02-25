@@ -23,7 +23,7 @@ void Mesh::load_mesh()
         glDeleteBuffers(1, &_ebo);
     if(glIsVertexArray(_vao) == GL_TRUE)
         glDeleteVertexArrays(1, &_vao);
-
+/*
     glGenVertexArrays(1, &_vao);
     glGenBuffers(1, &_vbo);
     glGenBuffers(1, &_ebo);
@@ -54,10 +54,12 @@ void Mesh::load_mesh()
         log::report(log_type::fatal_error, "unable to generate an Element Buffer Object (EBO) for a mesh");
     if(glIsVertexArray(_vao) != GL_TRUE)
         log::report(log_type::fatal_error, "unable to generate a Vertex Array Object (VAO) for a mesh");
+    */
 }
 
 void Mesh::render(Shader &shader)
 {
+    /*
     int diffuseNr = 1;
     int specularNr = 1;
     for(int i = 0; i < _textures.size(); i++)
@@ -84,6 +86,7 @@ void Mesh::render(Shader &shader)
     glBindVertexArray(VAO);
     glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);
+    */
 }
 
 Mesh::~Mesh()

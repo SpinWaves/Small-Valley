@@ -14,6 +14,8 @@
 #include <maths/vec2.h>
 #include <Kernel/height_map.h>
 
+struct Vertex;
+
 class World : public std::enable_shared_from_this<World>
 {
     inline static constexpr const int _world_size = 256;
@@ -37,6 +39,8 @@ class World : public std::enable_shared_from_this<World>
     private:
         World() = default; // placing constructor here so the create function can access it, but not the user
         void load_meshes();
+        void load_collisions();
+        void gen_mesh(std::vector<Vertex>& mesh_data);
         
         GLuint _vbo = 0;
         GLuint _vao = 0;
