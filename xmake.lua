@@ -4,7 +4,7 @@
 --
 -- Author : kbz_8 (https://solo.to/kbz_8)
 
-add_requires("libsdl_image", "libsdl", "libsdl_ttf", "glew", "glm")
+add_requires("libsdl_image", "libsdl", "libsdl_ttf", "glew", "glm", "assimp")
 
 add_rules("mode.debug", "mode.release")
 set_languages("c++17")
@@ -30,5 +30,5 @@ target("Small_Valley")
 
 	add_links("pthread")
 
-	add_packages("libsdl_image", "libsdl", "libsdl_ttf", "glew", "glm")
+	add_packages("libsdl_image", "libsdl", "libsdl_ttf", "glew", "glm", "assimp")
 target_end() -- optional but I think the code is cleaner with this

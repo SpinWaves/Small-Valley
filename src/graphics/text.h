@@ -7,8 +7,8 @@
 #ifndef __TEXT__
 #define __TEXT__
 
+/*
 #include <pch.h>
-
 enum class color_text { white, black };
 enum class align { left, center, right };
 
@@ -38,5 +38,5 @@ class Text
 
         int _vertex_count = 0;
 };
-
+*/
 #endif // __TEXT__

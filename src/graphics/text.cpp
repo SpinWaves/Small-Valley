@@ -5,7 +5,7 @@
 // Author : kbz_8 (https://solo.to/kbz_8)
 
 #include "text.h"
-
+/*
 Text::Text(TTF_Font* font, color_text color)
 {
     if(!TTF_WasInit() && TTF_Init() == -1)
@@ -183,7 +183,7 @@ void Text::add_line(const char* text)
 
     GLuint texture;
 
-    /* Use texture array */
+    // Use texture array
 
     glGenTextures(1, &texture);
     glBindTexture(GL_TEXTURE_2D, texture);
@@ -241,3 +241,4 @@ Text::~Text()
         TTF_CloseFont(_font);
     _font = nullptr;
 }
+*/

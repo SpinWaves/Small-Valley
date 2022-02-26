@@ -14,7 +14,7 @@ enum class matrix { proj, model, view };
 class Matrixes
 {
     public:
-        static void perspective(float FOV, float aspect, float near, float far);
+        static void perspective(float FOV, float aspect, float near_view, float far_view);
         static void ortho(float left, float right, float top, float bottom);
 
         static void matrix_mode(matrix type);

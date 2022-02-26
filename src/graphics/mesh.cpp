@@ -23,7 +23,7 @@ void Mesh::load_mesh()
         glDeleteBuffers(1, &_ebo);
     if(glIsVertexArray(_vao) == GL_TRUE)
         glDeleteVertexArrays(1, &_vao);
-/*
+
     glGenVertexArrays(1, &_vao);
     glGenBuffers(1, &_vbo);
     glGenBuffers(1, &_ebo);
@@ -54,12 +54,10 @@ void Mesh::load_mesh()
         log::report(log_type::fatal_error, "unable to generate an Element Buffer Object (EBO) for a mesh");
     if(glIsVertexArray(_vao) != GL_TRUE)
         log::report(log_type::fatal_error, "unable to generate a Vertex Array Object (VAO) for a mesh");
-    */
 }
 
 void Mesh::render(Shader &shader)
 {
-    /*
     int diffuseNr = 1;
     int specularNr = 1;
     for(int i = 0; i < _textures.size(); i++)
@@ -67,26 +65,25 @@ void Mesh::render(Shader &shader)
         glActiveTexture(GL_TEXTURE0 + i);
         std::string number;
         const char* name;
-        if(textures[i].get_type() == texture_type::deffuse)
+        if(_textures[i].get_type() == texture_type::diffuse)
         {
             number = std::to_string(diffuseNr++);
             name = "deffuse";
         }
-        else if(textures[i].get_type() == texture_type::specular)
+        else if(_textures[i].get_type() == texture_type::specular)
         {
             number = std::to_string(specularNr++);
             name = "specular";
         }
 
-        shader.setFloat(("material." + name + number).c_str(), i);
-        textures[i].bind_texture();
+        shader.setFloat(std::string("material." + name + number).c_str(), i);
+        _textures[i].bind_texture();
     }
     glActiveTexture(GL_TEXTURE0);
 
     glBindVertexArray(VAO);
     glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);
-    */
 }
 
 Mesh::~Mesh()

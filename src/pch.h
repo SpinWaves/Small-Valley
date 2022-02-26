@@ -18,6 +18,10 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
+
 #include <map>
 #include <array>
 #include <thread>
@@ -29,6 +33,7 @@
 
 #include <cmath>
 #include <ctime>
+#include <cstdlib>
 #include <cstddef>
 #include <cstdint>
 

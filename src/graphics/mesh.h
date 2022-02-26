@@ -7,9 +7,8 @@
 #ifndef __MESH__
 #define __MESH__
 
-#include <pch.h>
+#include "textures.h" // will include pch
 #include "vertex.h"
-#include "textures.h"
 #include "shaders.h"
 
 class Mesh

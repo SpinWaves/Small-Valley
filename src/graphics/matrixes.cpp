@@ -6,9 +6,9 @@
 
 #include "matrixes.h"
 
-void Matrixes::perspective(float FOV, float aspect, float near, float far)
+void Matrixes::perspective(float FOV, float aspect, float near_view, float far_view)
 {
-    _proj = glm::perspective<float>(glm::radians(FOV), aspect, near, far);
+    _proj = glm::perspective<float>(glm::radians(FOV), aspect, near_view, far_view);
 }
 
 void Matrixes::ortho(float left, float right, float top, float bottom)

@@ -8,7 +8,7 @@
 
 void log::report(log_type type, std::string message, ...)
 {
-    char buffer[message.length() + 255];
+    char* buffer = std::malloc(message.length() + 1024);
     va_list args;
     va_start(args, message);
     vsprintf(buffer, std::move(message).c_str(), args);
@@ -23,6 +23,8 @@ void log::report(log_type type, std::string message, ...)
 
         default: break;
     }
+
+    std::free(buffer);
 
     if(type == log_type::fatal_error)
     {
