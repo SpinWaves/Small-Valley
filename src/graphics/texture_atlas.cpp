@@ -15,11 +15,11 @@ static const char* paths[] = {
 void TextureAtlas::init()
 {
 	for(size_t i = 0; i < ARRAY_SIZE(paths); i++)
-		_atlas.emplace_back(paths[i]);
+		_atlas.emplace_back(new Texture(paths[i]));
 }
 
 void TextureAtlas::free()
 {
 	for(auto texture : _atlas)
-		texture.free_texture();
+		texture->free_texture();
 }

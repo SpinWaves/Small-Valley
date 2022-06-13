@@ -8,16 +8,18 @@
 #include <graphics/matrixes.h>
 #include <graphics/texture_atlas.h>
 
-Application::Application() : _shader(), _camera(), _cube(130, 150, 25, 0.5, 0.5, 2) {}
+Application::Application() : _shader(), _camera(), _house() {}
 
 void Application::init(const char* name)
 {
-    _win = SDL_CreateWindow(name, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1280, 720, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
+    _win = SDL_CreateWindow(name, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1280, 720, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
     if(!_win)
     {
         SDL_Quit();
         log::report(log_type::fatal_error, "unable to create the window");
     }
+    
+    SDL_MaximizeWindow(_win);
 
     _context = SDL_GL_CreateContext(_win);
     if(!_context)
@@ -49,7 +51,7 @@ void Application::init(const char* name)
     TextureAtlas::init();
 
     _world = World::create();
-    _cube.create(*_world);
+    _house.create(*_world);
 }
 
 void Application::update(const Input& in)
@@ -60,7 +62,7 @@ void Application::update(const Input& in)
     _camera.look();
 
     Matrixes::matrix_mode(matrix::proj);
-    Matrixes::perspective(90, (float)1280/720, 0.01, 1000);
+    Matrixes::perspective(90, (float)1280 / 720, 0.01, 1000);
 
     Matrixes::matrix_mode(matrix::model);
     Matrixes::load_identity();
@@ -84,7 +86,7 @@ void Application::update(const Input& in)
     _shader.setMat4("model", Matrixes::get_matrix(matrix::model));
     _shader.setVec3("viewPos", pos.X, pos.Y, pos.Z);
 
-    _cube.render();
+    _house.render();
 
     _shader.unbindShader();
     

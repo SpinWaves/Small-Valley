@@ -21,12 +21,12 @@ class TextureAtlas
 		static void init();
 		static void free();
 
-		inline static void bind(size_t index) noexcept { _atlas[index].bind_texture(); }
+		inline static void bind(size_t index) noexcept { _atlas[index]->bind_texture(); }
 
 		~TextureAtlas() = delete;
 
 	private:
-		inline static std::vector<Texture> _atlas;
+		inline static std::vector<std::shared_ptr<Texture>> _atlas;
 };
 
 #endif // __TEXTURE_ATLAS__

@@ -37,6 +37,9 @@ void Input::update()
         if(_event.window.event == SDL_WINDOWEVENT_CLOSE) 
             _end = true;
 
+        if(_event.window.event == SDL_WINDOWEVENT_RESIZED || _event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED)
+            glViewport(0, 0, _event.window.data1, _event.window.data2);
+
         switch(_event.type) 
         {
             case SDL_KEYDOWN: 

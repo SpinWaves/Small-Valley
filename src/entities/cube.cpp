@@ -10,27 +10,55 @@
 #include <graphics/cube_mesh.h>
 #include <graphics/texture_atlas.h>
 
-Cube::Cube(Vec3<float> pos, Vec3<float> size) : _vPos(std::move(pos)), _vSize(std::move(size)) {}
-Cube::Cube(float x, float y, float z, float w, float h, float d) : _vPos(x, y, z), _vSize(w, h, d) {}
+Cube::Cube(Cube::type t, Vec3<float> pos, Vec3<float> size) : _type(t), _vPos(std::move(pos)), _vSize(std::move(size)) {}
+Cube::Cube(Cube::type t, float x, float y, float z, float w, float h, float d) : _type(t), _vPos(x, y, z), _vSize(w, h, d) {}
 
-void Cube::set_pos(Vec3<float> pos) noexcept 
+void Cube::set_pos(World& world, Vec3<float> pos) noexcept 
 {
+    for(int x = -std::ceil(_vSize.X / 2) + 1; x < std::ceil(_vSize.X / 2); x++)
+        for(int y = -std::ceil(_vSize.Y / 2) + 1; y < std::ceil(_vSize.Y / 2); y++)
+            for(int z = -std::round(_vSize.Z / 2); z < std::round(_vSize.Z / 2); z++)
+                world.set_block(_vPos.X + x, _vPos.Y + y, _vPos.Z + z, 0);
+
     _vPos = std::move(pos);
+
+    for(int x = -std::ceil(_vSize.X / 2) + 1; x < std::ceil(_vSize.X / 2); x++)
+        for(int y = -std::ceil(_vSize.Y / 2) + 1; y < std::ceil(_vSize.Y / 2); y++)
+            for(int z = -std::round(_vSize.Z / 2); z < std::round(_vSize.Z / 2); z++)
+                world.set_block(_vPos.X + x, _vPos.Y + y, _vPos.Z + z, 1);
 }
-void Cube::set_pos(float x, float y, float z) noexcept
+
+void Cube::set_pos(World& world, float x, float y, float z) noexcept
 {
+    for(int x = -std::ceil(_vSize.X / 2) + 1; x < std::ceil(_vSize.X / 2); x++)
+        for(int y = -std::ceil(_vSize.Y / 2) + 1; y < std::ceil(_vSize.Y / 2); y++)
+            for(int z = -std::round(_vSize.Z / 2); z < std::round(_vSize.Z / 2); z++)
+                world.set_block(_vPos.X + x, _vPos.Y + y, _vPos.Z + z, 0);
+
     _vPos.SET(x, y, z);
+
+    for(int x = -std::ceil(_vSize.X / 2) + 1; x < std::ceil(_vSize.X / 2); x++)
+        for(int y = -std::ceil(_vSize.Y / 2) + 1; y < std::ceil(_vSize.Y / 2); y++)
+            for(int z = -std::round(_vSize.Z / 2); z < std::round(_vSize.Z / 2); z++)
+                world.set_block(_vPos.X + x, _vPos.Y + y, _vPos.Z + z, 1);
 }
 
-
-void Cube::set_size(Vec3<float> size) noexcept
+void Cube::set_size(World& world, Vec3<float> size) noexcept
 {
     _vSize = std::move(size);
+    for(int x = -std::ceil(_vSize.X / 2) + 1; x < std::ceil(_vSize.X / 2); x++)
+        for(int y = -std::ceil(_vSize.Y / 2) + 1; y < std::ceil(_vSize.Y / 2); y++)
+            for(int z = -std::round(_vSize.Z / 2); z < std::round(_vSize.Z / 2); z++)
+                world.set_block(_vPos.X + x, _vPos.Y + y, _vPos.Z + z, 1);
 }
 
-void Cube::set_size(float x, float y, float z) noexcept
+void Cube::set_size(World& world, float x, float y, float z) noexcept
 {
     _vSize.SET(x, y, z);
+    for(int x = -std::ceil(_vSize.X / 2) + 1; x < std::ceil(_vSize.X / 2); x++)
+        for(int y = -std::ceil(_vSize.Y / 2) + 1; y < std::ceil(_vSize.Y / 2); y++)
+            for(int z = -std::round(_vSize.Z / 2); z < std::round(_vSize.Z / 2); z++)
+                world.set_block(_vPos.X + x, _vPos.Y + y, _vPos.Z + z, 1);
 }
 
 void Cube::create(World& world)
@@ -40,49 +68,49 @@ void Cube::create(World& world)
     // top
     if(!world.get_block(_vPos.X, _vPos.Z, -(_vPos.Y - world.get_height(_vPos.X - 1, _vPos.Z - 1)) - 1) || _vSize.X != 1.0f || _vSize.Y != 1.0f || _vSize.Z != 1.0f)
     {
-        mesh_data.push_back(Vertex((cube_mesh[1].position  * _vSize) + _vPos, cube_mesh[1].normals, cube_mesh[1].texture_coords * Vec2<float>(_vSize.Y, _vSize.Z)));
-        mesh_data.push_back(Vertex((cube_mesh[2].position  * _vSize) + _vPos, cube_mesh[2].normals, cube_mesh[2].texture_coords * Vec2<float>(_vSize.Y, _vSize.Z)));
-        mesh_data.push_back(Vertex((cube_mesh[0].position  * _vSize) + _vPos, cube_mesh[0].normals, cube_mesh[0].texture_coords * Vec2<float>(_vSize.Y, _vSize.Z)));
+        mesh_data.push_back(Vertex((cube_mesh[1].position  * _vSize) + _vPos, cube_mesh[1].normals, cube_mesh[1].texture_coords * Vec2<float>(_vSize.X, _vSize.Y)));
+        mesh_data.push_back(Vertex((cube_mesh[2].position  * _vSize) + _vPos, cube_mesh[2].normals, cube_mesh[2].texture_coords * Vec2<float>(_vSize.X, _vSize.Y)));
+        mesh_data.push_back(Vertex((cube_mesh[0].position  * _vSize) + _vPos, cube_mesh[0].normals, cube_mesh[0].texture_coords * Vec2<float>(_vSize.X, _vSize.Y)));
 
-        mesh_data.push_back(Vertex((cube_mesh[3].position  * _vSize) + _vPos, cube_mesh[3].normals, cube_mesh[3].texture_coords * Vec2<float>(_vSize.Y, _vSize.Z)));
-        mesh_data.push_back(Vertex((cube_mesh[4].position  * _vSize) + _vPos, cube_mesh[4].normals, cube_mesh[4].texture_coords * Vec2<float>(_vSize.Y, _vSize.Z)));
-        mesh_data.push_back(Vertex((cube_mesh[5].position  * _vSize) + _vPos, cube_mesh[5].normals, cube_mesh[5].texture_coords * Vec2<float>(_vSize.Y, _vSize.Z)));
+        mesh_data.push_back(Vertex((cube_mesh[3].position  * _vSize) + _vPos, cube_mesh[3].normals, cube_mesh[3].texture_coords * Vec2<float>(_vSize.X, _vSize.Y)));
+        mesh_data.push_back(Vertex((cube_mesh[4].position  * _vSize) + _vPos, cube_mesh[4].normals, cube_mesh[4].texture_coords * Vec2<float>(_vSize.X, _vSize.Y)));
+        mesh_data.push_back(Vertex((cube_mesh[5].position  * _vSize) + _vPos, cube_mesh[5].normals, cube_mesh[5].texture_coords * Vec2<float>(_vSize.X, _vSize.Y)));
     }
 
     // bottom
     if(!world.get_block(_vPos.X, _vPos.Z, -(_vPos.Y - world.get_height(_vPos.X - 1, _vPos.Z - 1)) + 1) || _vSize.X != 1.0f ||_vSize.Y != 1.0f|| _vSize.Z != 1.0f)
     {
-        mesh_data.push_back(Vertex((cube_mesh[6].position  * _vSize) + _vPos, cube_mesh[6].normals, cube_mesh[6].texture_coords * Vec2<float>(_vSize.Y, _vSize.Z)));
-        mesh_data.push_back(Vertex((cube_mesh[7].position  * _vSize) + _vPos, cube_mesh[7].normals, cube_mesh[7].texture_coords * Vec2<float>(_vSize.Y, _vSize.Z)));
-        mesh_data.push_back(Vertex((cube_mesh[8].position  * _vSize) + _vPos, cube_mesh[8].normals, cube_mesh[8].texture_coords * Vec2<float>(_vSize.Y, _vSize.Z)));
+        mesh_data.push_back(Vertex((cube_mesh[6].position  * _vSize) + _vPos, cube_mesh[6].normals, cube_mesh[6].texture_coords * Vec2<float>(_vSize.X, _vSize.Y)));
+        mesh_data.push_back(Vertex((cube_mesh[7].position  * _vSize) + _vPos, cube_mesh[7].normals, cube_mesh[7].texture_coords * Vec2<float>(_vSize.X, _vSize.Y)));
+        mesh_data.push_back(Vertex((cube_mesh[8].position  * _vSize) + _vPos, cube_mesh[8].normals, cube_mesh[8].texture_coords * Vec2<float>(_vSize.X, _vSize.Y)));
 
-        mesh_data.push_back(Vertex((cube_mesh[9].position  * _vSize) + _vPos, cube_mesh[9].normals,  cube_mesh[9].texture_coords  * Vec2<float>(_vSize.Y, _vSize.Z)));
-        mesh_data.push_back(Vertex((cube_mesh[10].position * _vSize) + _vPos, cube_mesh[10].normals, cube_mesh[10].texture_coords * Vec2<float>(_vSize.Y, _vSize.Z)));
-        mesh_data.push_back(Vertex((cube_mesh[11].position * _vSize) + _vPos, cube_mesh[11].normals, cube_mesh[11].texture_coords * Vec2<float>(_vSize.Y, _vSize.Z)));
+        mesh_data.push_back(Vertex((cube_mesh[9].position  * _vSize) + _vPos, cube_mesh[9].normals,  cube_mesh[9].texture_coords  * Vec2<float>(_vSize.X, _vSize.Y)));
+        mesh_data.push_back(Vertex((cube_mesh[10].position * _vSize) + _vPos, cube_mesh[10].normals, cube_mesh[10].texture_coords * Vec2<float>(_vSize.X, _vSize.Y)));
+        mesh_data.push_back(Vertex((cube_mesh[11].position * _vSize) + _vPos, cube_mesh[11].normals, cube_mesh[11].texture_coords * Vec2<float>(_vSize.X, _vSize.Y)));
     }
 
     // front
     if(!world.get_block(_vPos.X - 1, _vPos.Z, -(_vPos.Y - world.get_height(_vPos.X - 1, _vPos.Z - 1))) || _vSize.X != 1.0f|| _vSize.Y != 1.0f ||_vSize.Z != 1.0f)
     {
-        mesh_data.push_back(Vertex((cube_mesh[12].position * _vSize) + _vPos, cube_mesh[12].normals, cube_mesh[12].texture_coords * Vec2<float>(_vSize.X, _vSize.Y)));
-        mesh_data.push_back(Vertex((cube_mesh[13].position * _vSize) + _vPos, cube_mesh[13].normals, cube_mesh[13].texture_coords * Vec2<float>(_vSize.X, _vSize.Y)));
-        mesh_data.push_back(Vertex((cube_mesh[14].position * _vSize) + _vPos, cube_mesh[14].normals, cube_mesh[14].texture_coords * Vec2<float>(_vSize.X, _vSize.Y)));
+        mesh_data.push_back(Vertex((cube_mesh[12].position * _vSize) + _vPos, cube_mesh[12].normals, cube_mesh[12].texture_coords * Vec2<float>(_vSize.Y, _vSize.Z)));
+        mesh_data.push_back(Vertex((cube_mesh[13].position * _vSize) + _vPos, cube_mesh[13].normals, cube_mesh[13].texture_coords * Vec2<float>(_vSize.Y, _vSize.Z)));
+        mesh_data.push_back(Vertex((cube_mesh[14].position * _vSize) + _vPos, cube_mesh[14].normals, cube_mesh[14].texture_coords * Vec2<float>(_vSize.Y, _vSize.Z)));
 
-        mesh_data.push_back(Vertex((cube_mesh[15].position * _vSize) + _vPos, cube_mesh[15].normals, cube_mesh[15].texture_coords * Vec2<float>(_vSize.X, _vSize.Y)));
-        mesh_data.push_back(Vertex((cube_mesh[16].position * _vSize) + _vPos, cube_mesh[16].normals, cube_mesh[16].texture_coords * Vec2<float>(_vSize.X, _vSize.Y)));
-        mesh_data.push_back(Vertex((cube_mesh[17].position * _vSize) + _vPos, cube_mesh[17].normals, cube_mesh[17].texture_coords * Vec2<float>(_vSize.X, _vSize.Y)));
+        mesh_data.push_back(Vertex((cube_mesh[15].position * _vSize) + _vPos, cube_mesh[15].normals, cube_mesh[15].texture_coords * Vec2<float>(_vSize.Y, _vSize.Z)));
+        mesh_data.push_back(Vertex((cube_mesh[16].position * _vSize) + _vPos, cube_mesh[16].normals, cube_mesh[16].texture_coords * Vec2<float>(_vSize.Y, _vSize.Z)));
+        mesh_data.push_back(Vertex((cube_mesh[17].position * _vSize) + _vPos, cube_mesh[17].normals, cube_mesh[17].texture_coords * Vec2<float>(_vSize.Y, _vSize.Z)));
     }
 
     // back
     if(!world.get_block(_vPos.X + 1, _vPos.Z, -(_vPos.Y - world.get_height(_vPos.X - 1, _vPos.Z - 1))) || _vSize.X != 1.0f || _vSize.Y != 1.0f || _vSize.Z != 1.0f)
     {
-        mesh_data.push_back(Vertex((cube_mesh[18].position * _vSize) + _vPos, cube_mesh[18].normals, cube_mesh[18].texture_coords * Vec2<float>(_vSize.X, _vSize.Y)));
-        mesh_data.push_back(Vertex((cube_mesh[19].position * _vSize) + _vPos, cube_mesh[19].normals, cube_mesh[19].texture_coords * Vec2<float>(_vSize.X, _vSize.Y)));
-        mesh_data.push_back(Vertex((cube_mesh[20].position * _vSize) + _vPos, cube_mesh[20].normals, cube_mesh[20].texture_coords * Vec2<float>(_vSize.X, _vSize.Y)));
+        mesh_data.push_back(Vertex((cube_mesh[18].position * _vSize) + _vPos, cube_mesh[18].normals, cube_mesh[18].texture_coords * Vec2<float>(_vSize.Y, _vSize.Z)));
+        mesh_data.push_back(Vertex((cube_mesh[19].position * _vSize) + _vPos, cube_mesh[19].normals, cube_mesh[19].texture_coords * Vec2<float>(_vSize.Y, _vSize.Z)));
+        mesh_data.push_back(Vertex((cube_mesh[20].position * _vSize) + _vPos, cube_mesh[20].normals, cube_mesh[20].texture_coords * Vec2<float>(_vSize.Y, _vSize.Z)));
 
-        mesh_data.push_back(Vertex((cube_mesh[21].position * _vSize) + _vPos, cube_mesh[21].normals, cube_mesh[21].texture_coords * Vec2<float>(_vSize.X, _vSize.Y)));
-        mesh_data.push_back(Vertex((cube_mesh[22].position * _vSize) + _vPos, cube_mesh[22].normals, cube_mesh[22].texture_coords * Vec2<float>(_vSize.X, _vSize.Y)));
-        mesh_data.push_back(Vertex((cube_mesh[23].position * _vSize) + _vPos, cube_mesh[23].normals, cube_mesh[23].texture_coords * Vec2<float>(_vSize.X, _vSize.Y)));
+        mesh_data.push_back(Vertex((cube_mesh[21].position * _vSize) + _vPos, cube_mesh[21].normals, cube_mesh[21].texture_coords * Vec2<float>(_vSize.Y, _vSize.Z)));
+        mesh_data.push_back(Vertex((cube_mesh[22].position * _vSize) + _vPos, cube_mesh[22].normals, cube_mesh[22].texture_coords * Vec2<float>(_vSize.Y, _vSize.Z)));
+        mesh_data.push_back(Vertex((cube_mesh[23].position * _vSize) + _vPos, cube_mesh[23].normals, cube_mesh[23].texture_coords * Vec2<float>(_vSize.Y, _vSize.Z)));
     }
 
     // right
@@ -111,9 +139,9 @@ void Cube::create(World& world)
 
     _vertex_count = mesh_data.size();
 
-    for(int x = -ceil(_vSize.X / 2); x < ceil(_vSize.X / 2); x++)
-        for(int y = -ceil(_vSize.Y / 2); y < ceil(_vSize.Y / 2); y++)
-            for(int z = -ceil(_vSize.Z / 2); z < ceil(_vSize.Z / 2); z++)
+    for(int x = -std::ceil(_vSize.X / 2) + 1; x < std::ceil(_vSize.X / 2); x++)
+        for(int y = -std::ceil(_vSize.Y / 2) + 1; y < std::ceil(_vSize.Y / 2); y++)
+            for(int z = -std::round(_vSize.Z / 2); z < std::round(_vSize.Z / 2); z++)
                 world.set_block(_vPos.X + x, _vPos.Y + y, _vPos.Z + z, 1);
 
     glGenVertexArrays(1, &_vao);
@@ -136,16 +164,21 @@ void Cube::create(World& world)
     glEnableVertexAttribArray(3); // texture coords
 
     if(glIsBuffer(_vbo) != GL_TRUE)
-        log::report(log_type::fatal_error, "unable to generate a Vertex Buffer Object (VBO) for the terrain mesh");
+        log::report(log_type::fatal_error, "unable to generate a Vertex Buffer Object (VBO) for a cube mesh");
     if(glIsVertexArray(_vao) != GL_TRUE)
-        log::report(log_type::fatal_error, "unable to generate a Vertex Array Object (VAO) for the terrain mesh");
+        log::report(log_type::fatal_error, "unable to generate a Vertex Array Object (VAO) for a cube mesh");
     
     glBindVertexArray(0);
 }
 
 void Cube::render()
 {
-    TextureAtlas::bind(WOOD_TEXTURE);
+    switch(_type)
+    {
+        case Cube::type::grass : TextureAtlas::bind(GRASS_TEXTURE); break;
+        case Cube::type::wood  : TextureAtlas::bind(WOOD_TEXTURE); break;
+        case Cube::type::plank : TextureAtlas::bind(WOOD_PLANK_TEXTURE); break;
+    }
 
     glBindVertexArray(_vao);
     

@@ -12,7 +12,7 @@
 #include <graphics/shaders.h>
 #include <graphics/camera.h>
 #include <entities/world.h>
-#include <entities/cube.h>
+#include <entities/house.h>
 #include <graphics/textures.h>
 
 class Application
@@ -35,7 +35,7 @@ class Application
         Shader _shader;
         Camera3D _camera;
         std::shared_ptr<World> _world;
-        Cube _cube;
+        House _house;
 };
 
 #endif // __APPLICATION__

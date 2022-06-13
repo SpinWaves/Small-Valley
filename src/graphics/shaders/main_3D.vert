@@ -20,12 +20,10 @@ uniform mat4 proj;
 uniform mat4 model;
 
 void main(void)
-{
-    vec4 fragPos = vec4(model * vec4(in_pos, 1.0));
-	
+{	
 	out_tex_coords = in_tex_coords;
 	pos = in_pos;
     normal = in_normal;
 
-    gl_Position = proj * view * fragPos;
+    gl_Position = proj * view * vec4(model * vec4(in_pos, 1.0));
 }

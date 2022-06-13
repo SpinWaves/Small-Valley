@@ -149,7 +149,7 @@ bool Camera3D::isColliding(double x, double y, double z, World& world)
 	int y1 = (int)(_position.Y + y + 0.8f);
 
 	int z0 = (int)(_position.Z + z - 1.4f);
-	int z1 = (int)(_position.Z + z + 0.8f);
+	int z1 = (int)(_position.Z + z + 0.2f);
 
 	int zGrounded = (int)(_position.Z + z - 1.4f - 0.1f);
 	_grounded = world.get_block(x0, y0, zGrounded) || world.get_block(x1, y0, zGrounded) || world.get_block(x1, y1, zGrounded) || world.get_block(x0, y1, zGrounded) ? true : false;
