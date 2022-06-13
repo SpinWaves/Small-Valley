@@ -16,23 +16,28 @@ class Cube
 {
     public:
         Cube() = default;
-
-        void set_pos(Vec3<int> pos) noexcept;
-        void set_pos(int x, int y, int z) noexcept;
+        Cube(Vec3<float> pos, Vec3<float> size);
+        Cube(float x, float y, float z, float w = 0, float h = 0, float d = 0);
         
-        void create(int x, int y, int z);
-        void render(Shader& shader);
+        void create(class World& world);
+
+        void set_pos(Vec3<float> pos) noexcept;
+        void set_pos(float x, float y, float z) noexcept;
+
+        void set_size(Vec3<float> size) noexcept;
+        void set_size(float x, float y, float z) noexcept;
+
+        void render();
 
         ~Cube();
 
     private:
         GLuint _vbo = 0;
-        GLuint _ebo = 0;
         GLuint _vao = 0;
+        size_t _vertex_count = 0;
 
-        Vec3<int> _vPos;
-
-        std::array<std::shared_ptr<Texture>, 6> _texture_atlas;
+        Vec3<float> _vPos;
+        Vec3<float> _vSize;
 };
 
 #endif // __CUBE__

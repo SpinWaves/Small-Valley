@@ -6,6 +6,11 @@
 
 #include "textures.h"
 
+Texture::Texture(const char* path)
+{
+    load_texture(path);
+}
+
 void Texture::load_texture(const char* filename, texture_type type)
 {
     glEnable(GL_TEXTURE_2D);
@@ -26,6 +31,8 @@ void Texture::load_texture(const char* filename, texture_type type)
 
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, image->w, image->h, 0, GL_RGB, GL_UNSIGNED_BYTE, image->pixels);
     SDL_FreeSurface(image);
+
+    glBindTexture(GL_TEXTURE_2D, 0);
 
     if(!_texture)
         log::report(log_type::error, "unable to generate a texture");

@@ -15,18 +15,19 @@ class Texture
 {
     public:
         Texture() = default;
+        Texture(const char* path);
 
         void load_texture(const char* filename, texture_type type = texture_type::diffuse);
-        inline void bind_texture()   noexcept { glBindTexture(GL_TEXTURE_2D, _texture); }
+        inline void bind_texture() noexcept { glBindTexture(GL_TEXTURE_2D, _texture); }
         inline static void unbind_texture() noexcept { glBindTexture(GL_TEXTURE_2D, 0); }
-        inline void free_texture()   noexcept { glDeleteTextures(1, &_texture); _texture = 0; }
+        inline void free_texture() noexcept { glDeleteTextures(1, &_texture); _texture = 0; }
         inline texture_type get_type() const noexcept { return _type; }
 
         ~Texture();
 
     private:
-        GLuint _texture = 0;
         texture_type _type;
+        GLuint _texture = 0;
 };
 
 #endif // __TEXTURES__

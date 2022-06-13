@@ -7,131 +7,155 @@
 #include "cube.h"
 #include "world.h"
 #include <graphics/matrixes.h>
+#include <graphics/cube_mesh.h>
+#include <graphics/texture_atlas.h>
 
-void Cube::set_pos(Vec3<int> pos) noexcept 
+Cube::Cube(Vec3<float> pos, Vec3<float> size) : _vPos(std::move(pos)), _vSize(std::move(size)) {}
+Cube::Cube(float x, float y, float z, float w, float h, float d) : _vPos(x, y, z), _vSize(w, h, d) {}
+
+void Cube::set_pos(Vec3<float> pos) noexcept 
 {
     _vPos = std::move(pos);
 }
-void Cube::set_pos(int x, int y, int z) noexcept
+void Cube::set_pos(float x, float y, float z) noexcept
 {
     _vPos.SET(x, y, z);
 }
 
-void Cube::create(int x, int y, int z)
+
+void Cube::set_size(Vec3<float> size) noexcept
 {
-    //    v6--------v5
-    //   /|        /|
-    //  v1--------v0|
-    //  | |       | |
-    //  | v7------|-v4
-    //  |/        |/
-    //  v2--------v3
+    _vSize = std::move(size);
+}
 
-    // vertex position array
-    float vertices[72] = {
-         1.0f, 1.0f, 1.0f,  -1.0f, 1.0f, 1.0f,  -1.0f,-1.0f, 1.0f,  1.0f,-1.0f, 1.0f, // top
-         1.0f, 1.0f, 1.0f,   1.0f,-1.0f, 1.0f,   1.0f,-1.0f,-1.0f,  1.0f, 1.0f,-1.0f, // back
-         1.0f, 1.0f, 1.0f,   1.0f, 1.0f,-1.0f,  -1.0f, 1.0f,-1.0f, -1.0f, 1.0f, 1.0f, // left
-        -1.0f, 1.0f, 1.0f,  -1.0f, 1.0f,-1.0f,  -1.0f,-1.0f,-1.0f, -1.0f,-1.0f, 1.0f, // front
-        -1.0f,-1.0f,-1.0f,   1.0f,-1.0f,-1.0f,   1.0f,-1.0f, 1.0f, -1.0f,-1.0f, 1.0f, // right
-         1.0f,-1.0f,-1.0f,  -1.0f,-1.0f,-1.0f,  -1.0f, 1.0f,-1.0f,  1.0f, 1.0f,-1.0f  // bottom
-    };
+void Cube::set_size(float x, float y, float z) noexcept
+{
+    _vSize.SET(x, y, z);
+}
 
-    float normals[72] = {
-             0, 0, 1,   0, 0, 1,   0, 0, 1,   0, 0, 1,  // top
-             1, 0, 0,   1, 0, 0,   1, 0, 0,   1, 0, 0,  // back
-             0, 1, 0,   0, 1, 0,   0, 1, 0,   0, 1, 0,  // left
-            -1, 0, 0,  -1, 0, 0,  -1, 0, 0,  -1, 0, 0,  // front
-             0,-1, 0,   0,-1, 0,   0,-1, 0,   0,-1, 0,  // right
-             0, 0,-1,   0, 0,-1,   0, 0,-1,   0, 0,-1   // bottom
-    };
+void Cube::create(World& world)
+{
+    std::vector<Vertex> mesh_data;
 
-    // texture coord array
-    float coords_tex[48] = {
-        0, 0,   0, 1,   1, 1,   1, 0, // top
-        1, 0,   0, 0,   0, 1,   1, 1, // back
-        0, 0,   0, 1,   1, 1,   1, 0, // left
-        0, 0,   0, 1,   1, 1,   1, 0, // front
-        0, 1,   1, 1,   1, 0,   0, 0, // right
-        0, 0,   0, 1,   1, 1,   1, 0  // bottom
-    };
+    // top
+    if(!world.get_block(_vPos.X, _vPos.Z, -(_vPos.Y - world.get_height(_vPos.X - 1, _vPos.Z - 1)) - 1) || _vSize.X != 1.0f || _vSize.Y != 1.0f || _vSize.Z != 1.0f)
+    {
+        mesh_data.push_back(Vertex((cube_mesh[1].position  * _vSize) + _vPos, cube_mesh[1].normals, cube_mesh[1].texture_coords * Vec2<float>(_vSize.Y, _vSize.Z)));
+        mesh_data.push_back(Vertex((cube_mesh[2].position  * _vSize) + _vPos, cube_mesh[2].normals, cube_mesh[2].texture_coords * Vec2<float>(_vSize.Y, _vSize.Z)));
+        mesh_data.push_back(Vertex((cube_mesh[0].position  * _vSize) + _vPos, cube_mesh[0].normals, cube_mesh[0].texture_coords * Vec2<float>(_vSize.Y, _vSize.Z)));
 
-    unsigned char indices[36] = {
-         0,  1,  2,   2,  3,  0, // top
-         4,  5,  6,   6,  7,  4, // back
-         8,  9, 10,  10, 11,  8, // left
-        12, 13, 14,  14, 15, 12, // front
-        16, 17, 18,  18, 19, 16, // right
-        20, 21, 22,  22, 23, 20  // bottom
-    };
+        mesh_data.push_back(Vertex((cube_mesh[3].position  * _vSize) + _vPos, cube_mesh[3].normals, cube_mesh[3].texture_coords * Vec2<float>(_vSize.Y, _vSize.Z)));
+        mesh_data.push_back(Vertex((cube_mesh[4].position  * _vSize) + _vPos, cube_mesh[4].normals, cube_mesh[4].texture_coords * Vec2<float>(_vSize.Y, _vSize.Z)));
+        mesh_data.push_back(Vertex((cube_mesh[5].position  * _vSize) + _vPos, cube_mesh[5].normals, cube_mesh[5].texture_coords * Vec2<float>(_vSize.Y, _vSize.Z)));
+    }
+
+    // bottom
+    if(!world.get_block(_vPos.X, _vPos.Z, -(_vPos.Y - world.get_height(_vPos.X - 1, _vPos.Z - 1)) + 1) || _vSize.X != 1.0f ||_vSize.Y != 1.0f|| _vSize.Z != 1.0f)
+    {
+        mesh_data.push_back(Vertex((cube_mesh[6].position  * _vSize) + _vPos, cube_mesh[6].normals, cube_mesh[6].texture_coords * Vec2<float>(_vSize.Y, _vSize.Z)));
+        mesh_data.push_back(Vertex((cube_mesh[7].position  * _vSize) + _vPos, cube_mesh[7].normals, cube_mesh[7].texture_coords * Vec2<float>(_vSize.Y, _vSize.Z)));
+        mesh_data.push_back(Vertex((cube_mesh[8].position  * _vSize) + _vPos, cube_mesh[8].normals, cube_mesh[8].texture_coords * Vec2<float>(_vSize.Y, _vSize.Z)));
+
+        mesh_data.push_back(Vertex((cube_mesh[9].position  * _vSize) + _vPos, cube_mesh[9].normals,  cube_mesh[9].texture_coords  * Vec2<float>(_vSize.Y, _vSize.Z)));
+        mesh_data.push_back(Vertex((cube_mesh[10].position * _vSize) + _vPos, cube_mesh[10].normals, cube_mesh[10].texture_coords * Vec2<float>(_vSize.Y, _vSize.Z)));
+        mesh_data.push_back(Vertex((cube_mesh[11].position * _vSize) + _vPos, cube_mesh[11].normals, cube_mesh[11].texture_coords * Vec2<float>(_vSize.Y, _vSize.Z)));
+    }
+
+    // front
+    if(!world.get_block(_vPos.X - 1, _vPos.Z, -(_vPos.Y - world.get_height(_vPos.X - 1, _vPos.Z - 1))) || _vSize.X != 1.0f|| _vSize.Y != 1.0f ||_vSize.Z != 1.0f)
+    {
+        mesh_data.push_back(Vertex((cube_mesh[12].position * _vSize) + _vPos, cube_mesh[12].normals, cube_mesh[12].texture_coords * Vec2<float>(_vSize.X, _vSize.Y)));
+        mesh_data.push_back(Vertex((cube_mesh[13].position * _vSize) + _vPos, cube_mesh[13].normals, cube_mesh[13].texture_coords * Vec2<float>(_vSize.X, _vSize.Y)));
+        mesh_data.push_back(Vertex((cube_mesh[14].position * _vSize) + _vPos, cube_mesh[14].normals, cube_mesh[14].texture_coords * Vec2<float>(_vSize.X, _vSize.Y)));
+
+        mesh_data.push_back(Vertex((cube_mesh[15].position * _vSize) + _vPos, cube_mesh[15].normals, cube_mesh[15].texture_coords * Vec2<float>(_vSize.X, _vSize.Y)));
+        mesh_data.push_back(Vertex((cube_mesh[16].position * _vSize) + _vPos, cube_mesh[16].normals, cube_mesh[16].texture_coords * Vec2<float>(_vSize.X, _vSize.Y)));
+        mesh_data.push_back(Vertex((cube_mesh[17].position * _vSize) + _vPos, cube_mesh[17].normals, cube_mesh[17].texture_coords * Vec2<float>(_vSize.X, _vSize.Y)));
+    }
+
+    // back
+    if(!world.get_block(_vPos.X + 1, _vPos.Z, -(_vPos.Y - world.get_height(_vPos.X - 1, _vPos.Z - 1))) || _vSize.X != 1.0f || _vSize.Y != 1.0f || _vSize.Z != 1.0f)
+    {
+        mesh_data.push_back(Vertex((cube_mesh[18].position * _vSize) + _vPos, cube_mesh[18].normals, cube_mesh[18].texture_coords * Vec2<float>(_vSize.X, _vSize.Y)));
+        mesh_data.push_back(Vertex((cube_mesh[19].position * _vSize) + _vPos, cube_mesh[19].normals, cube_mesh[19].texture_coords * Vec2<float>(_vSize.X, _vSize.Y)));
+        mesh_data.push_back(Vertex((cube_mesh[20].position * _vSize) + _vPos, cube_mesh[20].normals, cube_mesh[20].texture_coords * Vec2<float>(_vSize.X, _vSize.Y)));
+
+        mesh_data.push_back(Vertex((cube_mesh[21].position * _vSize) + _vPos, cube_mesh[21].normals, cube_mesh[21].texture_coords * Vec2<float>(_vSize.X, _vSize.Y)));
+        mesh_data.push_back(Vertex((cube_mesh[22].position * _vSize) + _vPos, cube_mesh[22].normals, cube_mesh[22].texture_coords * Vec2<float>(_vSize.X, _vSize.Y)));
+        mesh_data.push_back(Vertex((cube_mesh[23].position * _vSize) + _vPos, cube_mesh[23].normals, cube_mesh[23].texture_coords * Vec2<float>(_vSize.X, _vSize.Y)));
+    }
+
+    // right
+    if(!world.get_block(_vPos.X, _vPos.Z - 1, -(_vPos.Y - world.get_height(_vPos.X - 1, _vPos.Z - 1))) || _vSize.X != 1.0f || _vSize.Y != 1.0f || _vSize.Z != 1.0f)
+    {
+        mesh_data.push_back(Vertex((cube_mesh[24].position * _vSize) + _vPos, cube_mesh[24].normals, cube_mesh[24].texture_coords * Vec2<float>(_vSize.X, _vSize.Z)));
+        mesh_data.push_back(Vertex((cube_mesh[25].position * _vSize) + _vPos, cube_mesh[25].normals, cube_mesh[25].texture_coords * Vec2<float>(_vSize.X, _vSize.Z)));
+        mesh_data.push_back(Vertex((cube_mesh[26].position * _vSize) + _vPos, cube_mesh[26].normals, cube_mesh[26].texture_coords * Vec2<float>(_vSize.X, _vSize.Z)));
+
+        mesh_data.push_back(Vertex((cube_mesh[27].position * _vSize) + _vPos, cube_mesh[27].normals, cube_mesh[27].texture_coords * Vec2<float>(_vSize.X, _vSize.Z)));
+        mesh_data.push_back(Vertex((cube_mesh[28].position * _vSize) + _vPos, cube_mesh[28].normals, cube_mesh[28].texture_coords * Vec2<float>(_vSize.X, _vSize.Z)));
+        mesh_data.push_back(Vertex((cube_mesh[29].position * _vSize) + _vPos, cube_mesh[29].normals, cube_mesh[29].texture_coords * Vec2<float>(_vSize.X, _vSize.Z)));
+    }
+
+    // left
+    if(!world.get_block(_vPos.X, _vPos.Z + 1, -(_vPos.Y - world.get_height(_vPos.X - 1, _vPos.Z - 1))) || _vSize.X != 1.0f || _vSize.Y != 1.0f || _vSize.Z != 1.0f)
+    {
+        mesh_data.push_back(Vertex((cube_mesh[30].position * _vSize) + _vPos, cube_mesh[30].normals, cube_mesh[30].texture_coords * Vec2<float>(_vSize.X, _vSize.Z)));
+        mesh_data.push_back(Vertex((cube_mesh[31].position * _vSize) + _vPos, cube_mesh[31].normals, cube_mesh[31].texture_coords * Vec2<float>(_vSize.X, _vSize.Z)));
+        mesh_data.push_back(Vertex((cube_mesh[32].position * _vSize) + _vPos, cube_mesh[32].normals, cube_mesh[32].texture_coords * Vec2<float>(_vSize.X, _vSize.Z)));
+
+        mesh_data.push_back(Vertex((cube_mesh[33].position * _vSize) + _vPos, cube_mesh[33].normals, cube_mesh[33].texture_coords * Vec2<float>(_vSize.X, _vSize.Z)));
+        mesh_data.push_back(Vertex((cube_mesh[34].position * _vSize) + _vPos, cube_mesh[34].normals, cube_mesh[34].texture_coords * Vec2<float>(_vSize.X, _vSize.Z)));
+        mesh_data.push_back(Vertex((cube_mesh[35].position * _vSize) + _vPos, cube_mesh[35].normals, cube_mesh[35].texture_coords * Vec2<float>(_vSize.X, _vSize.Z)));
+    }
+
+    _vertex_count = mesh_data.size();
+
+    for(int x = -ceil(_vSize.X / 2); x < ceil(_vSize.X / 2); x++)
+        for(int y = -ceil(_vSize.Y / 2); y < ceil(_vSize.Y / 2); y++)
+            for(int z = -ceil(_vSize.Z / 2); z < ceil(_vSize.Z / 2); z++)
+                world.set_block(_vPos.X + x, _vPos.Y + y, _vPos.Z + z, 1);
 
     glGenVertexArrays(1, &_vao);
-	glBindVertexArray(_vao);
+    glBindVertexArray(_vao);
 
     if(glIsBuffer(_vbo) == GL_TRUE)
         glDeleteBuffers(1, &_vbo);
-    if(glIsBuffer(_ebo) == GL_TRUE)
-        glDeleteBuffers(1, &_ebo);
 
-	glGenBuffers(1, &_vbo);    
-    glGenBuffers(1, &_ebo);
+    glGenBuffers(1, &_vbo);
 
-	glBindBuffer(GL_ARRAY_BUFFER, _vbo);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices) + sizeof(coords_tex) + sizeof(normals), 0, GL_STATIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, _vbo);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * _vertex_count, &mesh_data[0], GL_STATIC_DRAW);
 
-    glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
-    glBufferSubData(GL_ARRAY_BUFFER, sizeof(vertices), sizeof(coords_tex), coords_tex);
-    glBufferSubData(GL_ARRAY_BUFFER, sizeof(vertices) + sizeof(coords_tex), sizeof(normals), normals);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), nullptr);
+    glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, normals));
+    glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, texture_coords));
 
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _ebo);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+    glEnableVertexAttribArray(0); // vertices
+    glEnableVertexAttribArray(2); // normals
+    glEnableVertexAttribArray(3); // texture coords
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, (void*)(sizeof(vertices)));
-    glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, 0, (void*)(sizeof(vertices) + sizeof(coords_tex)));
-	
-	glEnableVertexAttribArray(0);
-	glEnableVertexAttribArray(2);
-	glEnableVertexAttribArray(3);
-
-    glBindVertexArray(0);
-
-    if(glIsBuffer(_ebo) != GL_TRUE)
-        log::report(log_type::fatal_error, "unable to generate an Element Buffer Object (EBO)");
     if(glIsBuffer(_vbo) != GL_TRUE)
-        log::report(log_type::fatal_error, "unable to generate a Vertex Buffer Object (VBO)");
+        log::report(log_type::fatal_error, "unable to generate a Vertex Buffer Object (VBO) for the terrain mesh");
     if(glIsVertexArray(_vao) != GL_TRUE)
-        log::report(log_type::fatal_error, "unable to generate a Vertex Array Object (VAO)");
-
-    _vPos.SET(x, y, z);
-
-    //_texture_atlas = std::move(texture_atlas);
-}
-
-void Cube::render(Shader& shader)
-{
-    //if(!_texture_atlas.empty())
-    //    _texture_atlas[0]->bind_texture();
-    Matrixes::matrix_mode(matrix::model);
-    Matrixes::load_identity();
-    Matrixes::translate3D(_vPos.X, _vPos.Y, _vPos.Z);
-    shader.setMat4("model", Matrixes::get_matrix(matrix::model));
-
-    glBindVertexArray(_vao);
-  
-    glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_BYTE, 0);
+        log::report(log_type::fatal_error, "unable to generate a Vertex Array Object (VAO) for the terrain mesh");
     
     glBindVertexArray(0);
+}
 
-    Matrixes::load_identity();
+void Cube::render()
+{
+    TextureAtlas::bind(WOOD_TEXTURE);
 
-    //if(!_texture_atlas.empty())
-    //    _texture_atlas[0]->unbind_texture();
+    glBindVertexArray(_vao);
+    
+    glDrawArrays(GL_TRIANGLES, 0, _vertex_count);
+
+    glBindVertexArray(0);
 }
 
 Cube::~Cube()
 {
     glDeleteVertexArrays(1, &_vao);
     glDeleteBuffers(1, &_vbo);
-    glDeleteBuffers(1, &_ebo);
 }

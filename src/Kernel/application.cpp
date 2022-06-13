@@ -6,8 +6,9 @@
 
 #include "application.h"
 #include <graphics/matrixes.h>
+#include <graphics/texture_atlas.h>
 
-Application::Application() : _shader(), _camera(), _cube() {}
+Application::Application() : _shader(), _camera(), _cube(130, 150, 25, 0.5, 0.5, 2) {}
 
 void Application::init(const char* name)
 {
@@ -45,8 +46,10 @@ void Application::init(const char* name)
     glEnable(GL_TEXTURE_2D);
     glActiveTexture(GL_TEXTURE0);
 
+    TextureAtlas::init();
+
     _world = World::create();
-    _cube.create(0, 0, 0);
+    _cube.create(*_world);
 }
 
 void Application::update(const Input& in)
@@ -68,13 +71,29 @@ void Application::update(const Input& in)
     if(in.getInKey(SDL_SCANCODE_T, action::up))
         _wireline = _wireline ? false : true;
 
-    _world->render(_wireline, _camera.getPosition());
+    glPolygonMode(GL_FRONT_AND_BACK, _wireline ? GL_LINE : GL_FILL);
+
+    auto pos = _camera.getPosition();
+    
+    _world->render(pos);
+
+    _shader.bindShader();
+
+    _shader.setMat4("view", Matrixes::get_matrix(matrix::view));
+    _shader.setMat4("proj", Matrixes::get_matrix(matrix::proj));
+    _shader.setMat4("model", Matrixes::get_matrix(matrix::model));
+    _shader.setVec3("viewPos", pos.X, pos.Y, pos.Z);
+
+    _cube.render();
+
+    _shader.unbindShader();
     
     SDL_GL_SwapWindow(_win);
 }
 
 void Application::destroy()
 {
+    TextureAtlas::free();
     SDL_GL_DeleteContext(_context);
     SDL_DestroyWindow(_win);
     _win = nullptr;

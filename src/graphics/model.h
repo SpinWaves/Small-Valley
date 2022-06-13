@@ -12,7 +12,7 @@
 class Model
 {
     public:
-        Model(const char* path);
+        Model(const std::string& path);
 
         void render(Shader& shader);
 

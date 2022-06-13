@@ -5,6 +5,7 @@
 // Author : kbz_8 (https://solo.to/kbz_8)
 
 #include "world.h"
+#include <graphics/texture_atlas.h>
 #include <graphics/matrixes.h>
 #include <graphics/cube_mesh.h>
 
@@ -55,8 +56,7 @@ std::shared_ptr<World> World::create()
     world->_map.fill(second_dim);
 
     world->_shader.create(MAIN_DIR"src/graphics/shaders/terrain/terrain.vert", MAIN_DIR"src/graphics/shaders/terrain/terrain.frag");
-    world->_texture.load_texture(RES_DIR"assets/grass.jpg");
-    world->_normal_map.load_texture(RES_DIR"assets/grass_normal_map.jpg", texture_type::normal);
+    //world->_normal_map.load_texture(RES_DIR"assets/grass_normal_map.jpg", texture_type::normal);
 
     world->load_meshes();
 
@@ -73,9 +73,7 @@ void World::load_collisions()
         for(int x = 1; x <= _world_size; x++)
         {
             for(int y = 0; y < _world_size; y++)
-            {
                 set_block(x, z, -(y - get_height(x - 1, z - 1)), 1);
-            }
         }
     }
     log::report(log_type::message, "World collision data generated");  
@@ -181,10 +179,8 @@ void World::load_meshes()
 {
     std::vector<Vertex> mesh_data;
 
-    std::thread collisions_thread(&World::load_collisions, this);
-    std::thread mesh_thread(&World::gen_mesh, this, std::ref(mesh_data));
-
-    mesh_thread.join();
+    load_collisions();
+    gen_mesh(mesh_data);
 
     glGenVertexArrays(1, &_vao);
 	glBindVertexArray(_vao);
@@ -211,11 +207,9 @@ void World::load_meshes()
         log::report(log_type::fatal_error, "unable to generate a Vertex Array Object (VAO) for the terrain mesh");
     
     glBindVertexArray(0);
-
-    collisions_thread.join();
 }
 
-void World::render(bool wireline, const Vec3<double>& cam_pos)
+void World::render(const Vec3<double>& cam_pos)
 {
     _shader.bindShader();
 
@@ -224,21 +218,19 @@ void World::render(bool wireline, const Vec3<double>& cam_pos)
     _shader.setMat4("model", Matrixes::get_matrix(matrix::model));
     _shader.setVec3("viewPos", cam_pos.X, cam_pos.Y, cam_pos.Z);
 
-    glActiveTexture(GL_TEXTURE0);
-    _texture.bind_texture();
-    glActiveTexture(GL_TEXTURE1);
-    _normal_map.bind_texture();
+    //glActiveTexture(GL_TEXTURE0);
+    TextureAtlas::bind(GRASS_TEXTURE);
+    //glActiveTexture(GL_TEXTURE1);
+    //_normal_map.bind_texture();
   
-    glPolygonMode(GL_FRONT_AND_BACK, wireline ? GL_LINE : GL_FILL);
-
     glBindVertexArray(_vao);
     
     glDrawArrays(GL_TRIANGLES, 0, _vertex_count);
 
     glBindVertexArray(0);
 
-    _texture.unbind_texture();
-    _normal_map.unbind_texture();
+    Texture::unbind_texture();
+    //_normal_map.unbind_texture();
 
     _shader.unbindShader();
 }

@@ -12,6 +12,7 @@
 
 struct Vertex
 {
+    Vertex();
     Vertex(Vec3<float> p, Vec3<float> n, Vec2<float> t) : position(std::move(p)), normals(std::move(n)), texture_coords(std::move(t)) {}
 
     Vec3<float> position;
@@ -19,17 +20,18 @@ struct Vertex
     Vec2<float> texture_coords;
 };
 
+#define MAX_BONE_INFLUENCE 4
+
 struct Vertex_Normal_Mapped : public Vertex
 {
-    Vertex_Normal_Mapped(Vec3<float> p, Vec3<float> n, Vec2<float> t, Vec3<float> tan_1, Vec3<float> btan_1, Vec3<float> tan_2, Vec3<float> btan_2) : 
-        Vertex(std::move(p), std::move(n), std::move(t)), 
-        tangent_1(std::move(tan_1)), bitangent_1(std::move(btan_1)),
-        tangent_2(std::move(tan_2)), bitangent_2(std::move(btan_2)) {}
+    Vertex_Normal_Mapped();
+    Vertex_Normal_Mapped(Vec3<float> p, Vec3<float> n, Vec2<float> t, Vec3<float> tan, Vec3<float> btan) : 
+        Vertex(std::move(p), std::move(n), std::move(t)), tangent(std::move(tan)), bitangent(std::move(btan)) {}
     
-    Vec3<float> tangent_1;
-    Vec3<float> bitangent_1;
-    Vec3<float> tangent_2;
-    Vec3<float> bitangent_2;
+    Vec3<float> tangent;
+    Vec3<float> bitangent;
+	std::array<int, MAX_BONE_INFLUENCE> boneIDs;
+	std::array<float, MAX_BONE_INFLUENCE> weights;
 };
 
 #endif // __VERTEX__
