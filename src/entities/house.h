@@ -22,6 +22,8 @@ class House
 
 	private:
 		std::array<std::unique_ptr<Cube>, 4> _pillars;
+		std::array<std::unique_ptr<Cube>, 2> _walls;
+		Cube _floor;
 };
 
 #endif // __HOUSE__

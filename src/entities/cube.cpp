@@ -68,73 +68,73 @@ void Cube::create(World& world)
     // top
     if(!world.get_block(_vPos.X, _vPos.Z, -(_vPos.Y - world.get_height(_vPos.X - 1, _vPos.Z - 1)) - 1) || _vSize.X != 1.0f || _vSize.Y != 1.0f || _vSize.Z != 1.0f)
     {
-        mesh_data.push_back(Vertex((cube_mesh[1].position  * _vSize) + _vPos, cube_mesh[1].normals, cube_mesh[1].texture_coords * Vec2<float>(_vSize.X, _vSize.Y)));
-        mesh_data.push_back(Vertex((cube_mesh[2].position  * _vSize) + _vPos, cube_mesh[2].normals, cube_mesh[2].texture_coords * Vec2<float>(_vSize.X, _vSize.Y)));
-        mesh_data.push_back(Vertex((cube_mesh[0].position  * _vSize) + _vPos, cube_mesh[0].normals, cube_mesh[0].texture_coords * Vec2<float>(_vSize.X, _vSize.Y)));
+        mesh_data.push_back(Vertex((cube_mesh[1].position.DirectCopy()  * _vSize) + _vPos, cube_mesh[1].normals, cube_mesh[1].texture_coords.DirectCopy() * Vec2<float>(_vSize.X, _vSize.Y)));
+        mesh_data.push_back(Vertex((cube_mesh[2].position.DirectCopy()  * _vSize) + _vPos, cube_mesh[2].normals, cube_mesh[2].texture_coords.DirectCopy() * Vec2<float>(_vSize.X, _vSize.Y)));
+        mesh_data.push_back(Vertex((cube_mesh[0].position.DirectCopy()  * _vSize) + _vPos, cube_mesh[0].normals, cube_mesh[0].texture_coords.DirectCopy() * Vec2<float>(_vSize.X, _vSize.Y)));
 
-        mesh_data.push_back(Vertex((cube_mesh[3].position  * _vSize) + _vPos, cube_mesh[3].normals, cube_mesh[3].texture_coords * Vec2<float>(_vSize.X, _vSize.Y)));
-        mesh_data.push_back(Vertex((cube_mesh[4].position  * _vSize) + _vPos, cube_mesh[4].normals, cube_mesh[4].texture_coords * Vec2<float>(_vSize.X, _vSize.Y)));
-        mesh_data.push_back(Vertex((cube_mesh[5].position  * _vSize) + _vPos, cube_mesh[5].normals, cube_mesh[5].texture_coords * Vec2<float>(_vSize.X, _vSize.Y)));
+        mesh_data.push_back(Vertex((cube_mesh[3].position.DirectCopy()  * _vSize) + _vPos, cube_mesh[3].normals, cube_mesh[3].texture_coords.DirectCopy() * Vec2<float>(_vSize.X, _vSize.Y)));
+        mesh_data.push_back(Vertex((cube_mesh[4].position.DirectCopy()  * _vSize) + _vPos, cube_mesh[4].normals, cube_mesh[4].texture_coords.DirectCopy() * Vec2<float>(_vSize.X, _vSize.Y)));
+        mesh_data.push_back(Vertex((cube_mesh[5].position.DirectCopy()  * _vSize) + _vPos, cube_mesh[5].normals, cube_mesh[5].texture_coords.DirectCopy() * Vec2<float>(_vSize.X, _vSize.Y)));
     }
 
     // bottom
     if(!world.get_block(_vPos.X, _vPos.Z, -(_vPos.Y - world.get_height(_vPos.X - 1, _vPos.Z - 1)) + 1) || _vSize.X != 1.0f ||_vSize.Y != 1.0f|| _vSize.Z != 1.0f)
     {
-        mesh_data.push_back(Vertex((cube_mesh[6].position  * _vSize) + _vPos, cube_mesh[6].normals, cube_mesh[6].texture_coords * Vec2<float>(_vSize.X, _vSize.Y)));
-        mesh_data.push_back(Vertex((cube_mesh[7].position  * _vSize) + _vPos, cube_mesh[7].normals, cube_mesh[7].texture_coords * Vec2<float>(_vSize.X, _vSize.Y)));
-        mesh_data.push_back(Vertex((cube_mesh[8].position  * _vSize) + _vPos, cube_mesh[8].normals, cube_mesh[8].texture_coords * Vec2<float>(_vSize.X, _vSize.Y)));
+        mesh_data.push_back(Vertex((cube_mesh[6].position.DirectCopy()  * _vSize) + _vPos, cube_mesh[6].normals, cube_mesh[6].texture_coords.DirectCopy() * Vec2<float>(_vSize.X, _vSize.Y)));
+        mesh_data.push_back(Vertex((cube_mesh[7].position.DirectCopy()  * _vSize) + _vPos, cube_mesh[7].normals, cube_mesh[7].texture_coords.DirectCopy() * Vec2<float>(_vSize.X, _vSize.Y)));
+        mesh_data.push_back(Vertex((cube_mesh[8].position.DirectCopy()  * _vSize) + _vPos, cube_mesh[8].normals, cube_mesh[8].texture_coords.DirectCopy() * Vec2<float>(_vSize.X, _vSize.Y)));
 
-        mesh_data.push_back(Vertex((cube_mesh[9].position  * _vSize) + _vPos, cube_mesh[9].normals,  cube_mesh[9].texture_coords  * Vec2<float>(_vSize.X, _vSize.Y)));
-        mesh_data.push_back(Vertex((cube_mesh[10].position * _vSize) + _vPos, cube_mesh[10].normals, cube_mesh[10].texture_coords * Vec2<float>(_vSize.X, _vSize.Y)));
-        mesh_data.push_back(Vertex((cube_mesh[11].position * _vSize) + _vPos, cube_mesh[11].normals, cube_mesh[11].texture_coords * Vec2<float>(_vSize.X, _vSize.Y)));
+        mesh_data.push_back(Vertex((cube_mesh[9].position.DirectCopy()  * _vSize) + _vPos, cube_mesh[9].normals,  cube_mesh[9].texture_coords.DirectCopy()  * Vec2<float>(_vSize.X, _vSize.Y)));
+        mesh_data.push_back(Vertex((cube_mesh[10].position.DirectCopy() * _vSize) + _vPos, cube_mesh[10].normals, cube_mesh[10].texture_coords.DirectCopy() * Vec2<float>(_vSize.X, _vSize.Y)));
+        mesh_data.push_back(Vertex((cube_mesh[11].position.DirectCopy() * _vSize) + _vPos, cube_mesh[11].normals, cube_mesh[11].texture_coords.DirectCopy() * Vec2<float>(_vSize.X, _vSize.Y)));
     }
 
     // front
     if(!world.get_block(_vPos.X - 1, _vPos.Z, -(_vPos.Y - world.get_height(_vPos.X - 1, _vPos.Z - 1))) || _vSize.X != 1.0f|| _vSize.Y != 1.0f ||_vSize.Z != 1.0f)
     {
-        mesh_data.push_back(Vertex((cube_mesh[12].position * _vSize) + _vPos, cube_mesh[12].normals, cube_mesh[12].texture_coords * Vec2<float>(_vSize.Y, _vSize.Z)));
-        mesh_data.push_back(Vertex((cube_mesh[13].position * _vSize) + _vPos, cube_mesh[13].normals, cube_mesh[13].texture_coords * Vec2<float>(_vSize.Y, _vSize.Z)));
-        mesh_data.push_back(Vertex((cube_mesh[14].position * _vSize) + _vPos, cube_mesh[14].normals, cube_mesh[14].texture_coords * Vec2<float>(_vSize.Y, _vSize.Z)));
+        mesh_data.push_back(Vertex((cube_mesh[12].position.DirectCopy() * _vSize) + _vPos, cube_mesh[12].normals, cube_mesh[12].texture_coords.DirectCopy() * Vec2<float>(_vSize.Y, _vSize.Z)));
+        mesh_data.push_back(Vertex((cube_mesh[13].position.DirectCopy() * _vSize) + _vPos, cube_mesh[13].normals, cube_mesh[13].texture_coords.DirectCopy() * Vec2<float>(_vSize.Y, _vSize.Z)));
+        mesh_data.push_back(Vertex((cube_mesh[14].position.DirectCopy() * _vSize) + _vPos, cube_mesh[14].normals, cube_mesh[14].texture_coords.DirectCopy() * Vec2<float>(_vSize.Y, _vSize.Z)));
 
-        mesh_data.push_back(Vertex((cube_mesh[15].position * _vSize) + _vPos, cube_mesh[15].normals, cube_mesh[15].texture_coords * Vec2<float>(_vSize.Y, _vSize.Z)));
-        mesh_data.push_back(Vertex((cube_mesh[16].position * _vSize) + _vPos, cube_mesh[16].normals, cube_mesh[16].texture_coords * Vec2<float>(_vSize.Y, _vSize.Z)));
-        mesh_data.push_back(Vertex((cube_mesh[17].position * _vSize) + _vPos, cube_mesh[17].normals, cube_mesh[17].texture_coords * Vec2<float>(_vSize.Y, _vSize.Z)));
+        mesh_data.push_back(Vertex((cube_mesh[15].position.DirectCopy() * _vSize) + _vPos, cube_mesh[15].normals, cube_mesh[15].texture_coords.DirectCopy() * Vec2<float>(_vSize.Y, _vSize.Z)));
+        mesh_data.push_back(Vertex((cube_mesh[16].position.DirectCopy() * _vSize) + _vPos, cube_mesh[16].normals, cube_mesh[16].texture_coords.DirectCopy() * Vec2<float>(_vSize.Y, _vSize.Z)));
+        mesh_data.push_back(Vertex((cube_mesh[17].position.DirectCopy() * _vSize) + _vPos, cube_mesh[17].normals, cube_mesh[17].texture_coords.DirectCopy() * Vec2<float>(_vSize.Y, _vSize.Z)));
     }
 
     // back
     if(!world.get_block(_vPos.X + 1, _vPos.Z, -(_vPos.Y - world.get_height(_vPos.X - 1, _vPos.Z - 1))) || _vSize.X != 1.0f || _vSize.Y != 1.0f || _vSize.Z != 1.0f)
     {
-        mesh_data.push_back(Vertex((cube_mesh[18].position * _vSize) + _vPos, cube_mesh[18].normals, cube_mesh[18].texture_coords * Vec2<float>(_vSize.Y, _vSize.Z)));
-        mesh_data.push_back(Vertex((cube_mesh[19].position * _vSize) + _vPos, cube_mesh[19].normals, cube_mesh[19].texture_coords * Vec2<float>(_vSize.Y, _vSize.Z)));
-        mesh_data.push_back(Vertex((cube_mesh[20].position * _vSize) + _vPos, cube_mesh[20].normals, cube_mesh[20].texture_coords * Vec2<float>(_vSize.Y, _vSize.Z)));
+        mesh_data.push_back(Vertex((cube_mesh[18].position.DirectCopy() * _vSize) + _vPos, cube_mesh[18].normals, cube_mesh[18].texture_coords.DirectCopy() * Vec2<float>(_vSize.Y, _vSize.Z)));
+        mesh_data.push_back(Vertex((cube_mesh[19].position.DirectCopy() * _vSize) + _vPos, cube_mesh[19].normals, cube_mesh[19].texture_coords.DirectCopy() * Vec2<float>(_vSize.Y, _vSize.Z)));
+        mesh_data.push_back(Vertex((cube_mesh[20].position.DirectCopy() * _vSize) + _vPos, cube_mesh[20].normals, cube_mesh[20].texture_coords.DirectCopy() * Vec2<float>(_vSize.Y, _vSize.Z)));
 
-        mesh_data.push_back(Vertex((cube_mesh[21].position * _vSize) + _vPos, cube_mesh[21].normals, cube_mesh[21].texture_coords * Vec2<float>(_vSize.Y, _vSize.Z)));
-        mesh_data.push_back(Vertex((cube_mesh[22].position * _vSize) + _vPos, cube_mesh[22].normals, cube_mesh[22].texture_coords * Vec2<float>(_vSize.Y, _vSize.Z)));
-        mesh_data.push_back(Vertex((cube_mesh[23].position * _vSize) + _vPos, cube_mesh[23].normals, cube_mesh[23].texture_coords * Vec2<float>(_vSize.Y, _vSize.Z)));
+        mesh_data.push_back(Vertex((cube_mesh[21].position.DirectCopy() * _vSize) + _vPos, cube_mesh[21].normals, cube_mesh[21].texture_coords.DirectCopy() * Vec2<float>(_vSize.Y, _vSize.Z)));
+        mesh_data.push_back(Vertex((cube_mesh[22].position.DirectCopy() * _vSize) + _vPos, cube_mesh[22].normals, cube_mesh[22].texture_coords.DirectCopy() * Vec2<float>(_vSize.Y, _vSize.Z)));
+        mesh_data.push_back(Vertex((cube_mesh[23].position.DirectCopy() * _vSize) + _vPos, cube_mesh[23].normals, cube_mesh[23].texture_coords.DirectCopy() * Vec2<float>(_vSize.Y, _vSize.Z)));
     }
 
     // right
     if(!world.get_block(_vPos.X, _vPos.Z - 1, -(_vPos.Y - world.get_height(_vPos.X - 1, _vPos.Z - 1))) || _vSize.X != 1.0f || _vSize.Y != 1.0f || _vSize.Z != 1.0f)
     {
-        mesh_data.push_back(Vertex((cube_mesh[24].position * _vSize) + _vPos, cube_mesh[24].normals, cube_mesh[24].texture_coords * Vec2<float>(_vSize.X, _vSize.Z)));
-        mesh_data.push_back(Vertex((cube_mesh[25].position * _vSize) + _vPos, cube_mesh[25].normals, cube_mesh[25].texture_coords * Vec2<float>(_vSize.X, _vSize.Z)));
-        mesh_data.push_back(Vertex((cube_mesh[26].position * _vSize) + _vPos, cube_mesh[26].normals, cube_mesh[26].texture_coords * Vec2<float>(_vSize.X, _vSize.Z)));
+        mesh_data.push_back(Vertex((cube_mesh[24].position.DirectCopy() * _vSize) + _vPos, cube_mesh[24].normals, cube_mesh[24].texture_coords.DirectCopy() * Vec2<float>(_vSize.X, _vSize.Z)));
+        mesh_data.push_back(Vertex((cube_mesh[25].position.DirectCopy() * _vSize) + _vPos, cube_mesh[25].normals, cube_mesh[25].texture_coords.DirectCopy() * Vec2<float>(_vSize.X, _vSize.Z)));
+        mesh_data.push_back(Vertex((cube_mesh[26].position.DirectCopy() * _vSize) + _vPos, cube_mesh[26].normals, cube_mesh[26].texture_coords.DirectCopy() * Vec2<float>(_vSize.X, _vSize.Z)));
 
-        mesh_data.push_back(Vertex((cube_mesh[27].position * _vSize) + _vPos, cube_mesh[27].normals, cube_mesh[27].texture_coords * Vec2<float>(_vSize.X, _vSize.Z)));
-        mesh_data.push_back(Vertex((cube_mesh[28].position * _vSize) + _vPos, cube_mesh[28].normals, cube_mesh[28].texture_coords * Vec2<float>(_vSize.X, _vSize.Z)));
-        mesh_data.push_back(Vertex((cube_mesh[29].position * _vSize) + _vPos, cube_mesh[29].normals, cube_mesh[29].texture_coords * Vec2<float>(_vSize.X, _vSize.Z)));
+        mesh_data.push_back(Vertex((cube_mesh[27].position.DirectCopy() * _vSize) + _vPos, cube_mesh[27].normals, cube_mesh[27].texture_coords.DirectCopy() * Vec2<float>(_vSize.X, _vSize.Z)));
+        mesh_data.push_back(Vertex((cube_mesh[28].position.DirectCopy() * _vSize) + _vPos, cube_mesh[28].normals, cube_mesh[28].texture_coords.DirectCopy() * Vec2<float>(_vSize.X, _vSize.Z)));
+        mesh_data.push_back(Vertex((cube_mesh[29].position.DirectCopy() * _vSize) + _vPos, cube_mesh[29].normals, cube_mesh[29].texture_coords.DirectCopy() * Vec2<float>(_vSize.X, _vSize.Z)));
     }
 
     // left
     if(!world.get_block(_vPos.X, _vPos.Z + 1, -(_vPos.Y - world.get_height(_vPos.X - 1, _vPos.Z - 1))) || _vSize.X != 1.0f || _vSize.Y != 1.0f || _vSize.Z != 1.0f)
     {
-        mesh_data.push_back(Vertex((cube_mesh[30].position * _vSize) + _vPos, cube_mesh[30].normals, cube_mesh[30].texture_coords * Vec2<float>(_vSize.X, _vSize.Z)));
-        mesh_data.push_back(Vertex((cube_mesh[31].position * _vSize) + _vPos, cube_mesh[31].normals, cube_mesh[31].texture_coords * Vec2<float>(_vSize.X, _vSize.Z)));
-        mesh_data.push_back(Vertex((cube_mesh[32].position * _vSize) + _vPos, cube_mesh[32].normals, cube_mesh[32].texture_coords * Vec2<float>(_vSize.X, _vSize.Z)));
+        mesh_data.push_back(Vertex((cube_mesh[30].position.DirectCopy() * _vSize) + _vPos, cube_mesh[30].normals, cube_mesh[30].texture_coords.DirectCopy() * Vec2<float>(_vSize.X, _vSize.Z)));
+        mesh_data.push_back(Vertex((cube_mesh[31].position.DirectCopy() * _vSize) + _vPos, cube_mesh[31].normals, cube_mesh[31].texture_coords.DirectCopy() * Vec2<float>(_vSize.X, _vSize.Z)));
+        mesh_data.push_back(Vertex((cube_mesh[32].position.DirectCopy() * _vSize) + _vPos, cube_mesh[32].normals, cube_mesh[32].texture_coords.DirectCopy() * Vec2<float>(_vSize.X, _vSize.Z)));
 
-        mesh_data.push_back(Vertex((cube_mesh[33].position * _vSize) + _vPos, cube_mesh[33].normals, cube_mesh[33].texture_coords * Vec2<float>(_vSize.X, _vSize.Z)));
-        mesh_data.push_back(Vertex((cube_mesh[34].position * _vSize) + _vPos, cube_mesh[34].normals, cube_mesh[34].texture_coords * Vec2<float>(_vSize.X, _vSize.Z)));
-        mesh_data.push_back(Vertex((cube_mesh[35].position * _vSize) + _vPos, cube_mesh[35].normals, cube_mesh[35].texture_coords * Vec2<float>(_vSize.X, _vSize.Z)));
+        mesh_data.push_back(Vertex((cube_mesh[33].position.DirectCopy() * _vSize) + _vPos, cube_mesh[33].normals, cube_mesh[33].texture_coords.DirectCopy() * Vec2<float>(_vSize.X, _vSize.Z)));
+        mesh_data.push_back(Vertex((cube_mesh[34].position.DirectCopy() * _vSize) + _vPos, cube_mesh[34].normals, cube_mesh[34].texture_coords.DirectCopy() * Vec2<float>(_vSize.X, _vSize.Z)));
+        mesh_data.push_back(Vertex((cube_mesh[35].position.DirectCopy() * _vSize) + _vPos, cube_mesh[35].normals, cube_mesh[35].texture_coords.DirectCopy() * Vec2<float>(_vSize.X, _vSize.Z)));
     }
 
     _vertex_count = mesh_data.size();
