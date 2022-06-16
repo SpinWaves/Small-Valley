@@ -11,6 +11,7 @@
 
 #define GRASS_TEXTURE 		0
 #define WOOD_PLANK_TEXTURE  1
+#define WOOD_PLANK_TEXTURE2 3
 #define WOOD_TEXTURE 		2
 
 class TextureAtlas

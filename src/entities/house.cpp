@@ -14,8 +14,8 @@ House::House() : _floor(Cube::type::plank, 136, 180.5, 9, 9, 10, 0.2)
 	_pillars[2] = std::make_unique<Cube>(Cube::type::wood, 132, 185, 12, 0.4, 0.4, 8);
 	_pillars[3] = std::make_unique<Cube>(Cube::type::wood, 140, 176, 12, 0.4, 0.4, 8);
 
-	_walls[0] = std::make_unique<Cube>(Cube::type::plank, 140, 180.5, 12, 0.2, 9, 6);
-	_walls[1] = std::make_unique<Cube>(Cube::type::plank, 135.9, 185, 12, 7.9, 0.2, 6);
+	_walls[0] = std::make_unique<Cube>(Cube::type::plank2, 140, 180.5, 12, 0.2, 9, 6);
+	_walls[1] = std::make_unique<Cube>(Cube::type::plank2, 135.9, 185, 12, 7.9, 0.2, 6);
 }
 
 void House::create(World& world)

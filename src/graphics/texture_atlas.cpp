@@ -9,7 +9,8 @@
 static const char* paths[] = {
 	RES_DIR"assets/grass.jpg",
 	RES_DIR"assets/wood_plank.jpg",
-	RES_DIR"assets/wood.png"
+	RES_DIR"assets/wood.png",
+	RES_DIR"assets/plank2.jpg",
 };
 
 void TextureAtlas::init()

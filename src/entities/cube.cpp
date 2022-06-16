@@ -15,54 +15,73 @@ Cube::Cube(Cube::type t, float x, float y, float z, float w, float h, float d) :
 
 void Cube::set_pos(World& world, Vec3<float> pos) noexcept 
 {
-    for(int x = -std::ceil(_vSize.X / 2) + 1; x < std::ceil(_vSize.X / 2); x++)
-        for(int y = -std::ceil(_vSize.Y / 2) + 1; y < std::ceil(_vSize.Y / 2); y++)
-            for(int z = -std::round(_vSize.Z / 2); z < std::round(_vSize.Z / 2); z++)
-                world.set_block(_vPos.X + x, _vPos.Y + y, _vPos.Z + z, 0);
+    if(_is_colliding)
+    {
+        for(int x = -std::ceil(_vSize.X / 2) + 1; x < std::ceil(_vSize.X / 2); x++)
+            for(int y = -std::ceil(_vSize.Y / 2) + 1; y < std::ceil(_vSize.Y / 2); y++)
+                for(int z = -std::round(_vSize.Z / 2); z < std::round(_vSize.Z / 2); z++)
+                    world.set_block(_vPos.X + x, _vPos.Y + y, _vPos.Z + z, 1);
+    }
 
     _vPos = std::move(pos);
 
-    for(int x = -std::ceil(_vSize.X / 2) + 1; x < std::ceil(_vSize.X / 2); x++)
-        for(int y = -std::ceil(_vSize.Y / 2) + 1; y < std::ceil(_vSize.Y / 2); y++)
-            for(int z = -std::round(_vSize.Z / 2); z < std::round(_vSize.Z / 2); z++)
-                world.set_block(_vPos.X + x, _vPos.Y + y, _vPos.Z + z, 1);
+    if(_is_colliding)
+    {
+        for(int x = -std::ceil(_vSize.X / 2) + 1; x < std::ceil(_vSize.X / 2); x++)
+            for(int y = -std::ceil(_vSize.Y / 2) + 1; y < std::ceil(_vSize.Y / 2); y++)
+                for(int z = -std::round(_vSize.Z / 2); z < std::round(_vSize.Z / 2); z++)
+                    world.set_block(_vPos.X + x, _vPos.Y + y, _vPos.Z + z, 1);
+    }
 }
 
 void Cube::set_pos(World& world, float x, float y, float z) noexcept
 {
-    for(int x = -std::ceil(_vSize.X / 2) + 1; x < std::ceil(_vSize.X / 2); x++)
-        for(int y = -std::ceil(_vSize.Y / 2) + 1; y < std::ceil(_vSize.Y / 2); y++)
-            for(int z = -std::round(_vSize.Z / 2); z < std::round(_vSize.Z / 2); z++)
-                world.set_block(_vPos.X + x, _vPos.Y + y, _vPos.Z + z, 0);
+    if(_is_colliding)
+    {
+        for(int x = -std::ceil(_vSize.X / 2) + 1; x < std::ceil(_vSize.X / 2); x++)
+            for(int y = -std::ceil(_vSize.Y / 2) + 1; y < std::ceil(_vSize.Y / 2); y++)
+                for(int z = -std::round(_vSize.Z / 2); z < std::round(_vSize.Z / 2); z++)
+                    world.set_block(_vPos.X + x, _vPos.Y + y, _vPos.Z + z, 1);
+    }
 
     _vPos.SET(x, y, z);
 
-    for(int x = -std::ceil(_vSize.X / 2) + 1; x < std::ceil(_vSize.X / 2); x++)
-        for(int y = -std::ceil(_vSize.Y / 2) + 1; y < std::ceil(_vSize.Y / 2); y++)
-            for(int z = -std::round(_vSize.Z / 2); z < std::round(_vSize.Z / 2); z++)
-                world.set_block(_vPos.X + x, _vPos.Y + y, _vPos.Z + z, 1);
+    if(_is_colliding)
+    {
+        for(int x = -std::ceil(_vSize.X / 2) + 1; x < std::ceil(_vSize.X / 2); x++)
+            for(int y = -std::ceil(_vSize.Y / 2) + 1; y < std::ceil(_vSize.Y / 2); y++)
+                for(int z = -std::round(_vSize.Z / 2); z < std::round(_vSize.Z / 2); z++)
+                    world.set_block(_vPos.X + x, _vPos.Y + y, _vPos.Z + z, 1);
+    }
 }
 
 void Cube::set_size(World& world, Vec3<float> size) noexcept
 {
     _vSize = std::move(size);
-    for(int x = -std::ceil(_vSize.X / 2) + 1; x < std::ceil(_vSize.X / 2); x++)
-        for(int y = -std::ceil(_vSize.Y / 2) + 1; y < std::ceil(_vSize.Y / 2); y++)
-            for(int z = -std::round(_vSize.Z / 2); z < std::round(_vSize.Z / 2); z++)
-                world.set_block(_vPos.X + x, _vPos.Y + y, _vPos.Z + z, 1);
+    if(_is_colliding)
+    {
+        for(int x = -std::ceil(_vSize.X / 2) + 1; x < std::ceil(_vSize.X / 2); x++)
+            for(int y = -std::ceil(_vSize.Y / 2) + 1; y < std::ceil(_vSize.Y / 2); y++)
+                for(int z = -std::round(_vSize.Z / 2); z < std::round(_vSize.Z / 2); z++)
+                    world.set_block(_vPos.X + x, _vPos.Y + y, _vPos.Z + z, 1);
+    }
 }
 
 void Cube::set_size(World& world, float x, float y, float z) noexcept
 {
     _vSize.SET(x, y, z);
-    for(int x = -std::ceil(_vSize.X / 2) + 1; x < std::ceil(_vSize.X / 2); x++)
-        for(int y = -std::ceil(_vSize.Y / 2) + 1; y < std::ceil(_vSize.Y / 2); y++)
-            for(int z = -std::round(_vSize.Z / 2); z < std::round(_vSize.Z / 2); z++)
-                world.set_block(_vPos.X + x, _vPos.Y + y, _vPos.Z + z, 1);
+    if(_is_colliding)
+    {
+        for(int x = -std::ceil(_vSize.X / 2) + 1; x < std::ceil(_vSize.X / 2); x++)
+            for(int y = -std::ceil(_vSize.Y / 2) + 1; y < std::ceil(_vSize.Y / 2); y++)
+                for(int z = -std::round(_vSize.Z / 2); z < std::round(_vSize.Z / 2); z++)
+                    world.set_block(_vPos.X + x, _vPos.Y + y, _vPos.Z + z, 1);
+    }
 }
 
-void Cube::create(World& world)
+void Cube::create(World& world, bool is_colliding)
 {
+    _is_colliding = is_colliding;
     std::vector<Vertex> mesh_data;
 
     // top
@@ -139,10 +158,13 @@ void Cube::create(World& world)
 
     _vertex_count = mesh_data.size();
 
-    for(int x = -std::ceil(_vSize.X / 2) + 1; x < std::ceil(_vSize.X / 2); x++)
-        for(int y = -std::ceil(_vSize.Y / 2) + 1; y < std::ceil(_vSize.Y / 2); y++)
-            for(int z = -std::round(_vSize.Z / 2); z < std::round(_vSize.Z / 2); z++)
-                world.set_block(_vPos.X + x, _vPos.Y + y, _vPos.Z + z, 1);
+    if(_is_colliding)
+    {
+        for(int x = -std::ceil(_vSize.X / 2) + 1; x < std::ceil(_vSize.X / 2); x++)
+            for(int y = -std::ceil(_vSize.Y / 2) + 1; y < std::ceil(_vSize.Y / 2); y++)
+                for(int z = -std::round(_vSize.Z / 2); z < std::round(_vSize.Z / 2); z++)
+                    world.set_block(_vPos.X + x, _vPos.Y + y, _vPos.Z + z, 1);
+    }
 
     glGenVertexArrays(1, &_vao);
     glBindVertexArray(_vao);
@@ -175,9 +197,10 @@ void Cube::render()
 {
     switch(_type)
     {
-        case Cube::type::grass : TextureAtlas::bind(GRASS_TEXTURE); break;
-        case Cube::type::wood  : TextureAtlas::bind(WOOD_TEXTURE); break;
-        case Cube::type::plank : TextureAtlas::bind(WOOD_PLANK_TEXTURE); break;
+        case Cube::type::grass  : TextureAtlas::bind(GRASS_TEXTURE); break;
+        case Cube::type::wood   : TextureAtlas::bind(WOOD_TEXTURE); break;
+        case Cube::type::plank  : TextureAtlas::bind(WOOD_PLANK_TEXTURE); break;
+        case Cube::type::plank2 : TextureAtlas::bind(WOOD_PLANK_TEXTURE2); break;
     }
 
     glBindVertexArray(_vao);

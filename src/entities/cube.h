@@ -15,14 +15,14 @@
 class Cube
 {
     public:
-        enum class type { grass, wood, plank };
+        enum class type { grass, wood, plank, plank2 };
 
         Cube() = default;
         Cube(type t) : _type(t) {}
         Cube(type t, Vec3<float> pos, Vec3<float> size);
         Cube(type t, float x, float y, float z, float w = 0, float h = 0, float d = 0);
         
-        void create(class World& world);
+        void create(class World& world, bool is_colliding = true);
 
         void set_pos(class World& world, Vec3<float> pos) noexcept;
         void set_pos(class World& world, float x, float y, float z) noexcept;
@@ -43,6 +43,8 @@ class Cube
         GLuint _vbo = 0;
         GLuint _vao = 0;
         size_t _vertex_count = 0;
+
+        bool _is_colliding = true;
 };
 
 #endif // __CUBE__
